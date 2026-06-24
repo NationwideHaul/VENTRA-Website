@@ -1,0 +1,230 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Ventra Insurance Group — global stylesheet
+   Brand tokens come from /branding (Brand Guide - Ventra.pdf).
+   Do not introduce hex values that are not in the brand palette.
+   ============================================================ */
+
+/* ---------- Self-hosted brand fonts ----------
+   Drop the licensed .woff2 files into /public/fonts (see
+   public/fonts/README.md). Until they are present the browser
+   falls back to the stacks defined in the @theme block below.
+   font-display: swap keeps text visible during load. */
+
+/* Pacaembu — primary / headings */
+@font-face {
+  font-family: "Pacaembu";
+  src: url("/fonts/pacaembu-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Pacaembu";
+  src: url("/fonts/pacaembu-medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Pacaembu";
+  src: url("/fonts/pacaembu-semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Pacaembu";
+  src: url("/fonts/pacaembu-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Ellery — secondary / accent subheads (referred to as "Elle" in the brief) */
+@font-face {
+  font-family: "Ellery";
+  src: url("/fonts/ellery-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Ellery";
+  src: url("/fonts/ellery-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ---------- Theme tokens (Tailwind v4) ---------- */
+@theme {
+  /* Brand palette — source of truth: Brand Guide - Ventra.pdf */
+  --color-ink: #09151c;        /* deep navy — primary dark surface / text */
+  --color-rust: #a43217;       /* terracotta — accent, CTAs, highlights */
+  --color-sand: #e2d7cc;       /* warm cream — light surface */
+  --color-charcoal: #231f20;   /* near-black — secondary dark */
+  --color-white: #ffffff;
+
+  /* Type families with graceful fallbacks (modern grotesk for
+     Pacaembu, clean serif for Ellery) */
+  --font-heading: "Pacaembu", system-ui, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  --font-accent: "Ellery", Georgia, "Times New Roman", Cambria, serif;
+  --font-sans: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+
+  /* Layout */
+  --spacing-section: clamp(4rem, 9vw, 8rem);
+  --container-max: 80rem; /* 1280px content max */
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  :root {
+    color-scheme: light;
+    --header-h: 5.75rem;
+  }
+
+  html {
+    /* Native fallback when JS / Lenis is off; Lenis overrides at runtime. */
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Lenis sets this class on <html> once it is running so it can drive
+     scroll itself. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+
+  body {
+    background-color: var(--color-white);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  /* Visible, on-brand focus states for keyboard users */
+  :focus-visible {
+    outline: 2px solid var(--color-rust);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-rust);
+    color: var(--color-white);
+  }
+}
+
+/* ---------- Utilities ---------- */
+@layer utilities {
+  .font-accent {
+    font-family: var(--font-accent);
+  }
+
+  /* Eyebrow / accent subhead, per brand "ACCENT SUBHEAD" treatment */
+  .eyebrow {
+    font-family: var(--font-accent);
+    font-style: italic;
+    letter-spacing: 0.01em;
+  }
+
+  .container-page {
+    width: 100%;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  /* Scroll-reveal: hidden until the element gets [data-revealed="true"]
+     (set by the Reveal component via IntersectionObserver).
+     Scoped to html.js so that without JavaScript — and for crawlers — the
+     content is fully visible (protects SEO, accessibility, and LCP). */
+  html.js [data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  html.js [data-reveal][data-revealed="true"] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Hero background glow (subtle drift) ---------- */
+@keyframes hero-glow-drift {
+  0%,
+  100% {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate(-50%, -3%) scale(1.06);
+    opacity: 1;
+  }
+}
+.hero-glow {
+  animation: hero-glow-drift 16s ease-in-out infinite;
+}
+.hero-glow-2 {
+  animation: hero-glow-drift 22s ease-in-out infinite reverse;
+}
+
+/* ---------- Scrollytelling panel swap ---------- */
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.panel-in {
+  animation: panel-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------- Reduced motion: disable all motion globally ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
