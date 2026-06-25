@@ -55,7 +55,7 @@ export default function HomePage() {
             className="absolute inset-0 bg-gradient-to-b from-ink/80 via-ink/55 to-ink/80"
           />
 
-          <div className="relative container-page pt-[clamp(5rem,12vh,9rem)] pb-[clamp(10rem,20vh,15rem)] text-center">
+          <div className="relative container-page pt-[clamp(5rem,12vh,9rem)] pb-[clamp(13rem,26vh,19rem)] text-center">
             <Reveal>
               <h1 className="mx-auto max-w-[15ch] text-balance text-5xl text-white sm:text-6xl lg:text-7xl">
                 Insurance for businesses that have{" "}
