@@ -63,7 +63,6 @@
   /* Brand palette — source of truth: Brand Guide - Ventra.pdf */
   --color-ink: #09151c;        /* deep navy — primary dark surface / text */
   --color-rust: #a43217;       /* terracotta — accent, CTAs, highlights */
-  --color-rust-bright: #d9743f; /* lighter rust — accents on dark backgrounds */
   --color-sand: #e2d7cc;       /* warm cream — light surface */
   --color-charcoal: #231f20;   /* near-black — secondary dark */
   --color-white: #ffffff;

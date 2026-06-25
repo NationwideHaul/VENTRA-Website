@@ -59,7 +59,7 @@ export default function HomePage() {
             <Reveal>
               <h1 className="mx-auto max-w-[15ch] text-balance text-5xl text-white sm:text-6xl lg:text-7xl">
                 Insurance for businesses that have{" "}
-                <span className="font-accent italic text-rust-bright">
+                <span className="font-accent italic text-rust">
                   too much to lose.
                 </span>
               </h1>
