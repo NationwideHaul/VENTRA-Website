@@ -2,7 +2,7 @@ import Link from "next/link";
 import Logo from "@/components/ui/Logo";
 import CTAButton from "@/components/ui/CTAButton";
 import { contact, footerLinks, site } from "@/data/site";
-import { specialties } from "@/data/industries";
+import { frontIndustries } from "@/data/industries";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -29,7 +29,7 @@ export default function Footer() {
               What we focus on
             </h2>
             <ul className="space-y-2.5">
-              {specialties.map((s) => (
+              {frontIndustries.map((s) => (
                 <li key={s.slug}>
                   <Link
                     href={s.href}
@@ -99,10 +99,8 @@ export default function Footer() {
           <p>
             &copy; {year} {site.name}. All rights reserved.
           </p>
-          {/* [CONFIRM] licensing line */}
           <p className="max-w-xl md:text-right">
-            Ventra Insurance Group is a licensed insurance agency. Licensing
-            details coming soon.
+            Ventra works under Complete Carrier Coverage LLC
           </p>
         </div>
       </div>

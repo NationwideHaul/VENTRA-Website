@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { specialties } from "@/data/industries";
+import { frontIndustries } from "@/data/industries";
 
 /**
  * "Specialist depth" showcase — a scroll-triggered sticky (scrollytelling)
@@ -22,15 +22,17 @@ type ShowcaseItem = {
   panelEyebrow: string;
 };
 
+// A representative slice of the primary-focus industries keeps this pinned
+// scroll section tasteful; the full set lives on /industries.
 const ITEMS: ShowcaseItem[] = [
-  ...specialties.map((s) => ({
+  ...frontIndustries.slice(0, 4).map((s) => ({
     key: s.slug,
     label: s.name,
     title: s.name,
     desc: s.valueProp,
-    coverages: s.coverages.map((c) => c.name),
+    coverages: s.core.map((c) => c.name),
     href: s.href,
-    panelEyebrow: "Coverages we structure",
+    panelEyebrow: "Core coverage",
   })),
   {
     key: "core",

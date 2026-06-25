@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Reveal from "@/components/motion/Reveal";
-import { heroIndustries } from "@/data/industries";
+import { frontIndustries } from "@/data/industries";
 
-// The home grid shows all hero industries plus a "View more" tile (8 cells).
-const homeIndustries = heroIndustries;
+// The home grid shows the 7 primary-focus industries plus a "View more" tile.
+const homeIndustries = frontIndustries;
 
 /**
  * Hero industry selector.
@@ -19,13 +19,19 @@ const ILLUSTRATION_EXT = "png";
 
 // Slugs that have a real illustration in /public/branding/illustrations.
 // Others fall back to the branded placeholder until art is provided.
-// To add one: drop `<slug>.png` in that folder and add the slug here.
+// All illustrations are pre-normalized to a uniform 3:2 canvas (drawing
+// trimmed, scaled, and centered) so they read at a consistent size.
+// `?v=` cache-busts after re-exporting over the same filenames.
 const ILLUSTRATED = new Set([
-  "self-storage",
   "contractors",
-  "warehousing-logistics",
+  "self-storage",
   "habitation-multifamily",
+  "real-estate",
+  "hospitality",
+  "healthcare",
+  "warehousing-logistics",
 ]);
+const ART_VERSION = "3";
 
 const TILE_BASE =
   "group relative flex w-full flex-col items-center rounded-2xl bg-white px-3 pb-5 pt-16 text-center transition-all duration-200";
@@ -67,7 +73,7 @@ function TileArt({ slug }: { slug: string }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={`/branding/illustrations/${slug}.${ILLUSTRATION_EXT}`}
+      src={`/branding/illustrations/${slug}.${ILLUSTRATION_EXT}?v=${ART_VERSION}`}
       alt=""
       aria-hidden
       className="h-24 w-36 object-contain"
@@ -75,28 +81,17 @@ function TileArt({ slug }: { slug: string }) {
   );
 }
 
-/** Distinct "see more" art for the More industries tile. */
+/** "See more" art for the More industries tile — the magnifying-glass
+ *  illustration, normalized to the same canvas as the industry tiles. */
 function MoreArt() {
   return (
-    <span className="flex h-24 w-36 items-center justify-center">
-      <span className="flex h-20 w-20 items-center justify-center rounded-2xl border-[0.5px] border-ink/10 bg-gradient-to-br from-sand to-white drop-shadow-sm">
-        <svg
-          viewBox="0 0 24 24"
-          className="h-7 w-7 text-rust"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden
-      >
-          <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
-          <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
-          <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
-          <path d="M17 14.5v6M14 17.5h6" />
-        </svg>
-      </span>
-    </span>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={`/branding/illustrations/more-industries.${ILLUSTRATION_EXT}?v=${ART_VERSION}`}
+      alt=""
+      aria-hidden
+      className="h-24 w-36 object-contain"
+    />
   );
 }
 
@@ -121,7 +116,7 @@ export default function HeroIndustrySelector() {
                 <TileArt slug={t.slug} />
               </span>
               <span className="font-heading text-sm font-medium leading-snug text-ink">
-                {t.label}
+                {t.name}
               </span>
             </Link>
           </Reveal>

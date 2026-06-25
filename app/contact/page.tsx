@@ -4,7 +4,7 @@ import { contact } from "@/data/site";
 import { resolveIndustryLabel } from "@/data/industries";
 
 export const metadata: Metadata = {
-  title: "Find an Agent",
+  title: "Start a Conversation",
   description:
     "An advisor will reach out. This is a conversation about your business, not an instant quote bot.",
 };
@@ -19,7 +19,7 @@ export default async function ContactPage({
 
   return (
     <PlaceholderPage
-      eyebrow="Find an Agent"
+      eyebrow="Start a Conversation"
       title="Let's talk about what you've built."
       intro="An advisor will reach out to understand your business. This is a conversation, not an instant quote bot. The short contact form lands in phase 7."
       phaseNote="advisor contact form in phase 7"

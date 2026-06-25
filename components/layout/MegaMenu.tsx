@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { specialties, industriesWeServe } from "@/data/industries";
+import { frontIndustries, moreIndustries } from "@/data/industries";
 
 type MegaMenuProps = {
   open: boolean;
@@ -12,16 +12,16 @@ type MegaMenuProps = {
 };
 
 /**
- * Desktop two-panel Industries mega-menu (brief section 6).
+ * Desktop two-panel Industries mega-menu.
  *
- * Left panel: the 4 specialties (featured, with sub-detail on hover) above a
- * lighter "Industries we serve" breadth list. Right panel: the active
- * specialty's name, one-line description, and a grid of coverage cards.
+ * Left panel: the 7 primary-focus industries (featured, hover swaps the right
+ * panel) above a lighter "More industries" breadth list. Right panel: the
+ * active industry's name, one-line value prop, and its Core coverage tier.
  */
 export default function MegaMenu({ open, onNavigate, id }: MegaMenuProps) {
-  const [activeSlug, setActiveSlug] = useState(specialties[0].slug);
+  const [activeSlug, setActiveSlug] = useState(frontIndustries[0].slug);
   const active =
-    specialties.find((s) => s.slug === activeSlug) ?? specialties[0];
+    frontIndustries.find((s) => s.slug === activeSlug) ?? frontIndustries[0];
 
   return (
     <div
@@ -39,11 +39,11 @@ export default function MegaMenu({ open, onNavigate, id }: MegaMenuProps) {
       ].join(" ")}
     >
       <div className="container-page grid grid-cols-12 gap-10 py-10">
-        {/* Left: specialties + breadth */}
+        {/* Left: primary focus + breadth */}
         <div className="col-span-5">
-          <p className="eyebrow text-rust text-sm mb-4">What we focus on</p>
+          <p className="eyebrow text-rust text-sm mb-4">Primary focus</p>
           <ul className="space-y-1">
-            {specialties.map((s) => {
+            {frontIndustries.map((s) => {
               const isActive = s.slug === active.slug;
               return (
                 <li key={s.slug}>
@@ -53,12 +53,12 @@ export default function MegaMenu({ open, onNavigate, id }: MegaMenuProps) {
                     onFocus={() => setActiveSlug(s.slug)}
                     onClick={onNavigate}
                     className={[
-                      "group flex items-center justify-between rounded-lg px-3 py-2.5 -mx-3",
+                      "group flex items-center justify-between rounded-lg px-3 py-2 -mx-3",
                       "transition-colors duration-200",
                       isActive ? "bg-sand/10 text-white" : "hover:bg-sand/5",
                     ].join(" ")}
                   >
-                    <span className="font-heading text-lg">{s.name}</span>
+                    <span className="font-heading text-[1.05rem]">{s.name}</span>
                     <span
                       aria-hidden
                       className={[
@@ -76,17 +76,17 @@ export default function MegaMenu({ open, onNavigate, id }: MegaMenuProps) {
             })}
           </ul>
 
-          <div className="mt-8 pt-6 border-t border-sand/10">
-            <p className="text-sand/60 text-sm mb-3">Industries we serve</p>
-            <ul className="flex flex-wrap gap-x-5 gap-y-1.5">
-              {industriesWeServe.map((label) => (
-                <li key={label}>
+          <div className="mt-7 pt-6 border-t border-sand/10">
+            <p className="text-sand/60 text-sm mb-3">More industries</p>
+            <ul className="grid grid-cols-2 gap-x-6 gap-y-1.5">
+              {moreIndustries.map((i) => (
+                <li key={i.slug}>
                   <Link
-                    href="/industries"
+                    href={i.href}
                     onClick={onNavigate}
                     className="text-sm text-sand/70 hover:text-white transition-colors"
                   >
-                    {label}
+                    {i.shortName}
                   </Link>
                 </li>
               ))}
@@ -94,13 +94,14 @@ export default function MegaMenu({ open, onNavigate, id }: MegaMenuProps) {
           </div>
         </div>
 
-        {/* Right: active specialty detail */}
+        {/* Right: active industry detail */}
         <div className="col-span-7 border-l border-sand/10 pl-10">
           <h3 className="font-heading text-2xl text-white">{active.name}</h3>
           <p className="mt-2 text-sand/80 max-w-md">{active.valueProp}</p>
 
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            {active.coverages.map((c) => (
+          <p className="eyebrow text-rust text-xs mt-6 mb-3">Core coverage</p>
+          <div className="grid grid-cols-2 gap-3">
+            {active.core.map((c) => (
               <div
                 key={c.name}
                 className="rounded-xl border border-sand/10 bg-sand/[0.03] px-4 py-3 text-sm text-sand/90"
@@ -115,7 +116,8 @@ export default function MegaMenu({ open, onNavigate, id }: MegaMenuProps) {
             onClick={onNavigate}
             className="mt-6 inline-flex items-center gap-2 text-rust hover:text-white transition-colors text-sm font-medium"
           >
-            Explore {active.shortName}
+            Explore {active.shortName} &middot; {active.specialty.length} specialty
+            lines
             <span aria-hidden>&rarr;</span>
           </Link>
         </div>

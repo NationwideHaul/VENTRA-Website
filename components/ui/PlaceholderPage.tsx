@@ -26,10 +26,10 @@ export default function PlaceholderPage({
   return (
     <Section className="min-h-[60vh]">
       {eyebrow && <p className="eyebrow text-rust mb-4">{eyebrow}</p>}
-      <h1 className="text-4xl sm:text-5xl lg:text-6xl text-ink max-w-3xl">
+      <h1 className="text-4xl sm:text-5xl lg:text-6xl text-ink max-w-4xl">
         {title}
       </h1>
-      <p className="mt-6 text-lg text-ink/70 max-w-2xl leading-relaxed">
+      <p className="mt-6 text-lg text-ink/70 max-w-4xl leading-relaxed">
         {intro}
       </p>
 

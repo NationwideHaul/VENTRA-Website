@@ -75,8 +75,9 @@
   --font-sans: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
     sans-serif;
 
-  /* Layout */
-  --spacing-section: clamp(4rem, 9vw, 8rem);
+  /* Layout — vertical rhythm for content sections. Kept tighter than a hero's
+     own padding so two stacked sections don't double into a cavernous gap. */
+  --spacing-section: clamp(2.5rem, 5vw, 4.5rem);
   --container-max: 80rem; /* 1280px content max */
 }
 
@@ -208,6 +209,17 @@
 }
 .panel-in {
   animation: panel-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------- Carrier logo marquee (infinite horizontal scroll) ---------- */
+@keyframes carrier-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* The track renders the logo set twice; -50% loops seamlessly. */
+    transform: translateX(-50%);
+  }
 }
 
 /* ---------- Reduced motion: disable all motion globally ---------- */

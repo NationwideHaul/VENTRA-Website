@@ -4,6 +4,7 @@ import Reveal from "@/components/motion/Reveal";
 import CTAButton from "@/components/ui/CTAButton";
 import HeroIndustrySelector from "@/components/home/HeroIndustrySelector";
 import SpecialtyShowcase from "@/components/home/SpecialtyShowcase";
+import CarrierMarquee from "@/components/home/CarrierMarquee";
 
 const FEATURES = [
   {
@@ -36,8 +37,8 @@ export default function HomePage() {
   return (
     <>
       {/* Hero — full-width image, white headline, selector card overlapping.
-          Sand backdrop fills below the image so the white selector card pops. */}
-      <section className="relative bg-sand">
+          White backdrop below the image; the selector card pops via its shadow. */}
+      <section className="relative bg-white">
         <div className="relative w-full overflow-hidden">
           <Image
             src="/hero.jpg"
@@ -59,10 +60,7 @@ export default function HomePage() {
           <div className="relative container-page pt-[clamp(5rem,12vh,9rem)] pb-[clamp(13rem,26vh,19rem)] text-center">
             <Reveal>
               <h1 className="mx-auto max-w-[15ch] text-balance text-5xl text-white sm:text-6xl lg:text-7xl">
-                Insurance for businesses that have{" "}
-                <span className="font-accent italic text-white">
-                  too much to lose.
-                </span>
+                Insurance for businesses that have too much to lose.
               </h1>
             </Reveal>
             <Reveal delay={100}>
@@ -84,52 +82,35 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Positioning — designed feature card on a sand backdrop. The dark
-          two-column card (branded visual + statement) pops against the sand. */}
-      <section className="bg-sand">
+      {/* Carrier partners — white band; sections divided by hairlines, not color */}
+      <section className="bg-white">
         <div className="container-page py-[var(--spacing-section)]">
-          <Reveal>
-            <div className="mx-auto grid max-w-6xl overflow-hidden rounded-3xl shadow-2xl ring-1 ring-ink/10 lg:grid-cols-2">
-              {/* Left: branded rust panel with oversized submark watermark */}
-              <div className="relative flex min-h-[18rem] items-end overflow-hidden bg-gradient-to-br from-rust to-[#7a2410] p-9 sm:p-11">
-                <Image
-                  src="/logos/ventra-submark-sand.png"
-                  alt=""
-                  width={4677}
-                  height={3984}
-                  unoptimized
-                  aria-hidden
-                  className="pointer-events-none absolute -right-12 -top-16 w-72 opacity-[0.14] sm:w-80"
-                />
-                <div className="relative">
-                  <p className="eyebrow text-lg text-sand">The Ventra approach</p>
-                  <p className="mt-2 font-heading text-2xl text-white sm:text-[1.6rem]">
-                    Coverage built around what you&rsquo;ve built.
-                  </p>
-                </div>
-              </div>
-
-              {/* Right: the positioning statement */}
-              <div className="flex flex-col justify-center bg-charcoal p-9 sm:p-12">
-                <p className="font-accent text-2xl leading-snug text-white sm:text-[1.75rem]">
-                  A strategic protection partner, not a transactional quote
-                  shop.
-                </p>
-                <p className="mt-5 leading-relaxed text-white/65">
-                  We structure coverage around what you&rsquo;ve built and
-                  advocate for you &mdash; especially at claim time.
-                </p>
-                <div className="mt-8">
-                  <CTAButton variant="outline" />
-                </div>
-              </div>
-            </div>
-          </Reveal>
+          <div className="mx-auto max-w-6xl text-center">
+            <Reveal>
+              <p className="eyebrow text-rust">Carrier partners</p>
+              <h2 className="mt-2 font-heading text-2xl text-ink sm:text-3xl">
+                Backed by the nation&rsquo;s leading carriers.
+              </h2>
+            </Reveal>
+          </div>
+          <div className="mt-10">
+            <CarrierMarquee />
+          </div>
         </div>
       </section>
 
+      {/* Hairline divider — separates the white sections without a color band */}
+      <div className="container-page" aria-hidden>
+        <div className="border-t border-ink/10" />
+      </div>
+
       {/* Specialist depth — scroll-triggered sticky showcase */}
       <SpecialtyShowcase />
+
+      {/* Hairline divider */}
+      <div className="container-page" aria-hidden>
+        <div className="border-t border-ink/10" />
+      </div>
 
       {/* Why Ventra — image + four selling points (editorial stat layout) */}
       <Section className="bg-white">

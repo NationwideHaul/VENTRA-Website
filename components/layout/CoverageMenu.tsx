@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { coverageLines } from "@/data/coverages";
+import { coverageGroups } from "@/data/coverages";
 
 type CoverageMenuProps = {
   open: boolean;
@@ -10,8 +10,9 @@ type CoverageMenuProps = {
 };
 
 /**
- * Desktop "Coverage" dropdown — a full-width panel listing every line of
- * coverage we structure. Matches the Industries mega-menu styling.
+ * Desktop "Coverage" dropdown — a full-width panel with one column per coverage
+ * tier (Core · Management & Professional · Property & Specialty ·
+ * Industry-Specific). Each line jumps to its section on /solutions.
  */
 export default function CoverageMenu({
   open,
@@ -34,7 +35,7 @@ export default function CoverageMenu({
       ].join(" ")}
     >
       <div className="container-page py-10">
-        <div className="mb-6 flex items-end justify-between gap-6">
+        <div className="mb-7 flex items-end justify-between gap-6">
           <div>
             <p className="eyebrow text-rust text-sm">Lines of coverage</p>
             <h3 className="mt-1 font-heading text-2xl text-white max-w-md">
@@ -46,41 +47,49 @@ export default function CoverageMenu({
             onClick={onNavigate}
             className="hidden shrink-0 items-center gap-2 text-sm font-medium text-rust transition-colors hover:text-white sm:inline-flex"
           >
-            View all solutions
+            View all coverage
             <span aria-hidden>&rarr;</span>
           </Link>
         </div>
 
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {coverageLines.map((c) => (
-            <li key={c.name}>
+        <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+          {coverageGroups.map((group) => (
+            <div key={group.id}>
               <Link
-                href="/solutions"
+                href={`/solutions#${group.id}`}
                 onClick={onNavigate}
-                className="group flex items-start gap-3 rounded-xl border border-sand/10 bg-sand/[0.03] px-4 py-3 transition-colors hover:border-sand/20 hover:bg-sand/[0.07]"
+                className="block text-sm font-medium text-white hover:text-rust transition-colors"
               >
-                <svg
-                  viewBox="0 0 20 20"
-                  className="mt-0.5 h-4 w-4 shrink-0 text-rust"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.25"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden
-                >
-                  <path d="m4 10.5 4 4 8-9" />
-                </svg>
-                <span>
-                  <span className="block text-sm font-medium text-white">
-                    {c.name}
-                  </span>
-                  <span className="block text-xs text-sand/60">{c.blurb}</span>
-                </span>
+                {group.heading}
               </Link>
-            </li>
+              <ul className="mt-3 space-y-2 border-t border-sand/10 pt-3">
+                {group.lines.map((c) => (
+                  <li key={c.name}>
+                    <Link
+                      href={`/solutions#${group.id}`}
+                      onClick={onNavigate}
+                      className="group flex items-start gap-2 text-sm text-sand/70 transition-colors hover:text-white"
+                    >
+                      <svg
+                        viewBox="0 0 20 20"
+                        className="mt-1 h-3 w-3 shrink-0 text-rust"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden
+                      >
+                        <path d="m4 10.5 4 4 8-9" />
+                      </svg>
+                      {c.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   );

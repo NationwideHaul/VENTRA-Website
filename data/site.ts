@@ -3,7 +3,7 @@
  *
  * Contact values are [CONFIRM] placeholders pulled from env vars where it
  * makes sense, so they can be swapped without code changes. The primary CTA
- * across the entire site is "Talk to an Advisor" — never "Get a Quote".
+ * across the entire site is "Start a Conversation" — never "Get a Quote".
  */
 
 export const site = {
@@ -16,7 +16,7 @@ export const site = {
 
 /** The one and only primary call to action. */
 export const PRIMARY_CTA = {
-  label: "Find an Agent",
+  label: "Start a Conversation",
   href: "/contact",
 } as const;
 
@@ -67,7 +67,7 @@ export const footerLinks: { heading: string; items: NavItem[] }[] = [
       { label: "About", href: "/about" },
       { label: "Solutions", href: "/solutions" },
       { label: "Industries", href: "/industries" },
-      { label: "Find an Agent", href: "/contact" },
+      { label: "Start a Conversation", href: "/contact" },
     ],
   },
 ];

@@ -1,19 +1,22 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import Section from "@/components/motion/Section";
 import Reveal from "@/components/motion/Reveal";
 import CTAButton from "@/components/ui/CTAButton";
-import { specialties, getSpecialty } from "@/data/industries";
+import { industries, getIndustry } from "@/data/industries";
 
 /**
- * Specialty vertical page — phase-1 placeholder built from the shared
- * template (brief section 6). Hero + risks + coverages + CTA are stubbed
- * from the seed data; the full "Why Ventra for [vertical]" advocacy section
- * and SEO copy land in phase 4.
+ * Industry page — built from the shared template for all 27 industries.
+ *
+ * Leads with the plain-language exposure profile ("we understand how your
+ * business actually operates"), then presents Core and Specialty coverage as
+ * two distinct tiers. The Specialty tier is the differentiator — the lines a
+ * once-a-year transactional agency overlooks.
  */
 
 export function generateStaticParams() {
-  return specialties.map((s) => ({ specialty: s.slug }));
+  return industries.map((i) => ({ specialty: i.slug }));
 }
 
 export async function generateMetadata({
@@ -22,39 +25,43 @@ export async function generateMetadata({
   params: Promise<{ specialty: string }>;
 }): Promise<Metadata> {
   const { specialty } = await params;
-  const s = getSpecialty(specialty);
-  if (!s) return {};
+  const i = getIndustry(specialty);
+  if (!i) return {};
   return {
-    title: `${s.name} Insurance`,
-    description: s.valueProp,
+    title: `${i.name} Insurance`,
+    description: i.exposureProfile,
   };
 }
 
-export default async function SpecialtyPage({
+export default async function IndustryPage({
   params,
 }: {
   params: Promise<{ specialty: string }>;
 }) {
   const { specialty } = await params;
-  const s = getSpecialty(specialty);
-  if (!s) notFound();
+  const industry = getIndustry(specialty);
+  if (!industry) notFound();
+
+  const isFront = industry.tier === "front";
 
   return (
     <>
-      {/* Hero */}
+      {/* Hero — leads with the exposure profile */}
       <section className="bg-ink text-sand">
         <div className="container-page py-[clamp(4rem,9vw,8rem)]">
           <Reveal>
-            <p className="eyebrow text-rust mb-4">Specialty vertical</p>
+            <p className="eyebrow text-rust mb-4">
+              {isFront ? "Primary focus" : "Industry"}
+            </p>
           </Reveal>
           <Reveal delay={80}>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl text-white max-w-3xl">
-              {s.name}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl text-white max-w-4xl">
+              {industry.name}
             </h1>
           </Reveal>
           <Reveal delay={160}>
-            <p className="mt-6 text-lg text-sand/75 max-w-2xl leading-relaxed">
-              {s.valueProp}
+            <p className="mt-6 text-lg text-sand/75 max-w-4xl leading-relaxed">
+              {industry.exposureProfile}
             </p>
           </Reveal>
           <Reveal delay={240}>
@@ -65,34 +72,89 @@ export default async function SpecialtyPage({
         </div>
       </section>
 
-      {/* Risks you face */}
+      {/* Core coverage */}
       <Section>
-        <h2 className="text-3xl text-ink">Risks you face</h2>
-        <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {s.risks.map((risk, i) => (
-            <Reveal key={risk} delay={i * 70} as="li">
-              <div className="h-full rounded-2xl border border-ink/10 bg-white p-6 text-ink/80 shadow-sm">
-                {risk}
+        <p className="eyebrow text-rust">Core coverage</p>
+        <h2 className="mt-2 text-3xl text-ink">
+          The foundation every {industry.shortName.toLowerCase()} account carries.
+        </h2>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {industry.core.map((c, i) => (
+            <Reveal key={c.name} delay={i * 60}>
+              <div className="flex h-full items-start gap-3 rounded-2xl border border-ink/10 bg-white p-5 shadow-sm">
+                <svg
+                  viewBox="0 0 20 20"
+                  className="mt-0.5 h-5 w-5 shrink-0 text-rust"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                >
+                  <path d="m4 10.5 4 4 8-9" />
+                </svg>
+                <span className="font-heading text-ink">{c.name}</span>
               </div>
             </Reveal>
           ))}
-        </ul>
+        </div>
       </Section>
 
-      {/* Coverages we structure */}
+      {/* Specialty coverage — the differentiator */}
       <Section className="bg-white">
-        <h2 className="text-3xl text-ink">Coverages we structure</h2>
+        <p className="eyebrow text-rust">Specialty coverage</p>
+        <h2 className="mt-2 text-3xl text-ink max-w-2xl">
+          The lines a once-a-year agent overlooks.
+        </h2>
+        <p className="mt-3 max-w-2xl text-ink/65">
+          These are where a {industry.shortName.toLowerCase()} program proves it
+          was built around how your business actually operates.
+        </p>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {s.coverages.map((c, i) => (
-            <Reveal key={c.name} delay={i * 60}>
+          {industry.specialty.map((c, i) => (
+            <Reveal key={c.name} delay={i * 50}>
               <div className="h-full rounded-2xl border border-ink/10 bg-white p-6 shadow-sm">
                 <h3 className="font-heading text-lg text-ink">{c.name}</h3>
-                {c.note && (
-                  <p className="mt-2 text-sm text-ink/60">{c.note}</p>
-                )}
+                {c.note && <p className="mt-2 text-sm text-ink/60">{c.note}</p>}
               </div>
             </Reveal>
           ))}
+        </div>
+      </Section>
+
+      {/* Why Ventra — the depth-first promise */}
+      <Section>
+        <div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <p className="eyebrow text-rust">Why Ventra</p>
+            <h2 className="mt-2 text-3xl text-ink">
+              We understand your business before we recommend coverage.
+            </h2>
+          </div>
+          <ul className="space-y-5">
+            {[
+              "We find the gaps a transactional agent misses — fewer surprises when a claim is tested.",
+              "Specialized depth in the industries we serve, so we speak your business on day one.",
+              "A relationship, not an annual transaction — coverage that keeps pace as you grow.",
+            ].map((point) => (
+              <li key={point} className="flex items-start gap-3 text-ink/80">
+                <svg
+                  viewBox="0 0 20 20"
+                  className="mt-1 h-5 w-5 shrink-0 text-rust"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                >
+                  <path d="m4 10.5 4 4 8-9" />
+                </svg>
+                {point}
+              </li>
+            ))}
+          </ul>
         </div>
       </Section>
 
@@ -100,7 +162,7 @@ export default async function SpecialtyPage({
       <section className="bg-rust text-white">
         <div className="container-page py-[clamp(3.5rem,7vw,6rem)] text-center">
           <h2 className="text-3xl sm:text-4xl max-w-2xl mx-auto">
-            Talk through {s.shortName} coverage with an advisor.
+            Talk through {industry.shortName} coverage with an advisor.
           </h2>
           <div className="mt-7">
             <CTAButton
@@ -109,8 +171,13 @@ export default async function SpecialtyPage({
               className="border-white/50 text-white hover:bg-white hover:text-rust"
             />
           </div>
-          <p className="mt-10 inline-block rounded-full border border-white/30 px-4 py-1.5 text-xs text-white/70">
-            Placeholder &middot; full specialty content in phase 4
+          <p className="mt-8">
+            <Link
+              href="/solutions"
+              className="text-sm text-white/80 underline-offset-4 hover:text-white hover:underline"
+            >
+              Explore every line of coverage we structure &rarr;
+            </Link>
           </p>
         </div>
       </section>

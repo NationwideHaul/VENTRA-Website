@@ -18,7 +18,7 @@ type CTAButtonProps = {
   variant?: Variant;
   size?: Size;
   className?: string;
-  /** Industry / state to pre-fill the Find an Agent form when opened. */
+  /** Industry / state to pre-fill the contact form when opened. */
   prefill?: ContactPrefill;
 };
 
@@ -42,8 +42,8 @@ const sizes: Record<Size, string> = {
 };
 
 /**
- * Primary call to action ("Find an Agent"). Opens the global contact form
- * modal; falls back to navigating to /contact when JavaScript is unavailable.
+ * Primary call to action ("Start a Conversation"). Opens the global contact
+ * form modal; falls back to navigating to /contact when JavaScript is unavailable.
  */
 export default function CTAButton({
   href = PRIMARY_CTA.href,

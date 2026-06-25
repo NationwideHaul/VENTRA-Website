@@ -10,10 +10,10 @@ import {
   type ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
-import { heroIndustries } from "@/data/industries";
+import { frontIndustries } from "@/data/industries";
 
 /**
- * Global "Find an Agent" contact modal.
+ * Global "Start a Conversation" contact modal.
  *
  * Any CTA (header, hero, footer, pages) opens the same form via
  * useContactModal().open(prefill). The hero passes the chosen industry and
@@ -39,7 +39,7 @@ export function useContactModal(): ContactModalCtx | null {
 }
 
 const INDUSTRY_OPTIONS = [
-  ...heroIndustries.map((i) => ({ value: i.slug, label: i.label })),
+  ...frontIndustries.map((i) => ({ value: i.slug, label: i.name })),
   { value: "other", label: "Other / not sure yet" },
 ];
 
@@ -168,7 +168,7 @@ function ContactModal({
           </svg>
         </button>
 
-        <p className="eyebrow text-rust">Find an Agent</p>
+        <p className="eyebrow text-rust">Start a Conversation</p>
         <h2
           id="contact-modal-title"
           className="mt-1 font-heading text-2xl text-ink"
@@ -312,7 +312,7 @@ function ContactModal({
             disabled={status === "submitting"}
             className="inline-flex h-12 w-full items-center justify-center rounded-full bg-rust px-6 font-medium text-white transition-colors hover:bg-ink disabled:opacity-60"
           >
-            {status === "submitting" ? "Sending…" : "Find an Agent"}
+            {status === "submitting" ? "Sending…" : "Start a Conversation"}
           </button>
         </form>
       </div>

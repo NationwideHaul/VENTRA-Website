@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { specialties, industriesWeServe } from "@/data/industries";
-import { coverageLines } from "@/data/coverages";
+import { frontIndustries, moreIndustries } from "@/data/industries";
+import { coverageGroups } from "@/data/coverages";
 import { mainNav, contact } from "@/data/site";
 import CTAButton from "@/components/ui/CTAButton";
 
@@ -73,9 +73,9 @@ export default function MobileMenu({ open, onClose, id }: MobileMenuProps) {
           />
           {industriesOpen && (
             <div className="pb-5">
-              <p className="eyebrow text-rust text-sm mb-2">What we focus on</p>
+              <p className="eyebrow text-rust text-sm mb-2">Primary focus</p>
               <ul className="space-y-1 mb-5">
-                {specialties.map((s) => (
+                {frontIndustries.map((s) => (
                   <li key={s.slug}>
                     <Link
                       href={s.href}
@@ -88,16 +88,16 @@ export default function MobileMenu({ open, onClose, id }: MobileMenuProps) {
                 ))}
               </ul>
 
-              <p className="text-sand/60 text-sm mb-2">Industries we serve</p>
-              <ul className="flex flex-wrap gap-x-4 gap-y-1">
-                {industriesWeServe.map((label) => (
-                  <li key={label}>
+              <p className="text-sand/60 text-sm mb-2">More industries</p>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
+                {moreIndustries.map((i) => (
+                  <li key={i.slug}>
                     <Link
-                      href="/industries"
+                      href={i.href}
                       onClick={onClose}
-                      className="text-sm text-sand/70 hover:text-white"
+                      className="block py-1 text-sm text-sand/70 hover:text-white"
                     >
-                      {label}
+                      {i.shortName}
                     </Link>
                   </li>
                 ))}
@@ -114,21 +114,31 @@ export default function MobileMenu({ open, onClose, id }: MobileMenuProps) {
             onToggle={() => setCoverageOpen((v) => !v)}
           />
           {coverageOpen && (
-            <div className="pb-5">
-              <p className="eyebrow text-rust text-sm mb-2">Lines of coverage</p>
-              <ul className="space-y-1">
-                {coverageLines.map((c) => (
-                  <li key={c.name}>
-                    <Link
-                      href="/solutions"
-                      onClick={onClose}
-                      className="block py-2 text-sand/90 hover:text-white"
-                    >
-                      {c.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+            <div className="pb-5 space-y-5">
+              {coverageGroups.map((group) => (
+                <div key={group.id}>
+                  <Link
+                    href={`/solutions#${group.id}`}
+                    onClick={onClose}
+                    className="eyebrow text-rust text-sm mb-2 block"
+                  >
+                    {group.heading}
+                  </Link>
+                  <ul className="space-y-0.5">
+                    {group.lines.map((c) => (
+                      <li key={c.name}>
+                        <Link
+                          href={`/solutions#${group.id}`}
+                          onClick={onClose}
+                          className="block py-1.5 text-sm text-sand/80 hover:text-white"
+                        >
+                          {c.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
           )}
         </div>
