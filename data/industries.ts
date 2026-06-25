@@ -152,26 +152,20 @@ export type HeroIndustry = { slug: string; label: string; blurb: string };
 
 export const heroIndustries: HeroIndustry[] = [
   {
-    slug: "self-storage",
-    label: "Self Storage",
-    blurb:
-      "Protection structured for storage operators, from the buildings to the tenants' goods.",
-  },
-  {
     slug: "contractors",
-    label: "Contractors & Specialty Trades",
+    label: "Construction & General Contractors",
     blurb:
       "Coverage built for the job site, the crew, and the equipment that gets the work done.",
   },
   {
-    slug: "warehousing-logistics",
-    label: "Warehousing & Logistics",
+    slug: "self-storage",
+    label: "Self Storage Facilities",
     blurb:
-      "Protection for the property and operations side of moving and storing goods at scale.",
+      "Protection structured for storage operators, from the buildings to the tenants' goods.",
   },
   {
     slug: "habitation-multifamily",
-    label: "Habitation & Multi-Family",
+    label: "Multi-Family & Habitational",
     blurb:
       "Coverage for condo and apartment communities, from the structures to the board.",
   },
@@ -179,6 +173,24 @@ export const heroIndustries: HeroIndustry[] = [
     slug: "real-estate",
     label: "Real Estate & Property Owners",
     blurb: "Coverage for property owners, managers, and investors.",
+  },
+  {
+    slug: "hospitality",
+    label: "Hospitality",
+    blurb:
+      "Protection for hotels, restaurants, and the guests and property they look after.",
+  },
+  {
+    slug: "healthcare",
+    label: "Healthcare & Senior Living",
+    blurb:
+      "Coverage for medical offices, senior living, and the people in their care.",
+  },
+  {
+    slug: "warehousing-logistics",
+    label: "Warehousing & Logistics",
+    blurb:
+      "Protection for the property and operations side of moving and storing goods at scale.",
   },
 ];
 

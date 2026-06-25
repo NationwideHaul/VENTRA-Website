@@ -7,9 +7,8 @@ import CTAButton from "@/components/ui/CTAButton";
 import { heroIndustries } from "@/data/industries";
 import { PRIMARY_CTA } from "@/data/site";
 
-// Real Estate is shown on the /industries page and contact form, but omitted
-// from the home "Explore by industry" tiles.
-const homeIndustries = heroIndustries.filter((i) => i.slug !== "real-estate");
+// The home grid shows all hero industries plus a "View more" tile (8 cells).
+const homeIndustries = heroIndustries;
 
 /**
  * Hero industry selector (Progressive-style "select a property type").
@@ -24,6 +23,16 @@ const homeIndustries = heroIndustries.filter((i) => i.slug !== "real-estate");
 
 // Change to "svg" if you drop SVG art into /public/branding/illustrations.
 const ILLUSTRATION_EXT = "png";
+
+// Slugs that have a real illustration in /public/branding/illustrations.
+// Others fall back to the branded placeholder until art is provided.
+// To add one: drop `<slug>.png` in that folder and add the slug here.
+const ILLUSTRATED = new Set([
+  "self-storage",
+  "contractors",
+  "warehousing-logistics",
+  "habitation-multifamily",
+]);
 
 const TILE_BASE =
   "group relative flex w-full flex-col items-center rounded-2xl bg-white px-3 pb-5 pt-16 text-center transition-all duration-200";
@@ -52,11 +61,9 @@ function PlaceholderArt() {
   );
 }
 
-/** Real illustration; falls back to the branded placeholder if it 404s. */
+/** Industry illustration, or the branded placeholder when art isn't ready. */
 function TileArt({ slug }: { slug: string }) {
-  const [errored, setErrored] = useState(false);
-
-  if (errored) {
+  if (!ILLUSTRATED.has(slug)) {
     return (
       <span className="block h-24 w-36">
         <PlaceholderArt />
@@ -70,7 +77,6 @@ function TileArt({ slug }: { slug: string }) {
       src={`/branding/illustrations/${slug}.${ILLUSTRATION_EXT}`}
       alt=""
       aria-hidden
-      onError={() => setErrored(true)}
       className="h-24 w-36 object-contain"
     />
   );
@@ -124,7 +130,7 @@ export default function HeroIndustrySelector() {
       <div
         role="group"
         aria-label="Select your industry"
-        className="mx-auto grid max-w-6xl grid-cols-2 gap-x-4 gap-y-16 pt-16 sm:grid-cols-3 lg:grid-cols-5"
+        className="mx-auto grid max-w-6xl grid-cols-2 gap-x-4 gap-y-16 pt-16 sm:grid-cols-4"
       >
         {homeIndustries.map((t, i) => {
           const isSelected = selected === t.slug;
