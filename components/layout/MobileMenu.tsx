@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { specialties, industriesWeServe } from "@/data/industries";
+import { coverageLines } from "@/data/coverages";
 import { mainNav, contact } from "@/data/site";
 import CTAButton from "@/components/ui/CTAButton";
 
@@ -12,12 +13,42 @@ type MobileMenuProps = {
   id: string;
 };
 
+function AccordionToggle({
+  label,
+  isOpen,
+  onToggle,
+}: {
+  label: string;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={isOpen}
+      className="flex w-full items-center justify-between py-4 font-heading text-xl"
+    >
+      {label}
+      <span
+        aria-hidden
+        className={`text-rust transition-transform duration-200 ${
+          isOpen ? "rotate-45" : ""
+        }`}
+      >
+        +
+      </span>
+    </button>
+  );
+}
+
 /**
- * Mobile navigation: a full-height panel with an accordion for Industries
- * (specialties expandable, then the breadth list), per brief section 6.
+ * Mobile navigation: full-height panel with accordions for Industries and
+ * Coverage, then the remaining top-level links.
  */
 export default function MobileMenu({ open, onClose, id }: MobileMenuProps) {
   const [industriesOpen, setIndustriesOpen] = useState(true);
+  const [coverageOpen, setCoverageOpen] = useState(false);
 
   return (
     <div
@@ -35,23 +66,11 @@ export default function MobileMenu({ open, onClose, id }: MobileMenuProps) {
       <nav className="container-page py-8" aria-label="Mobile">
         {/* Industries accordion */}
         <div className="border-b border-sand/10">
-          <button
-            type="button"
-            onClick={() => setIndustriesOpen((v) => !v)}
-            aria-expanded={industriesOpen}
-            className="flex w-full items-center justify-between py-4 font-heading text-xl"
-          >
-            Coverage
-            <span
-              aria-hidden
-              className={`text-rust transition-transform duration-200 ${
-                industriesOpen ? "rotate-45" : ""
-              }`}
-            >
-              +
-            </span>
-          </button>
-
+          <AccordionToggle
+            label="Industries"
+            isOpen={industriesOpen}
+            onToggle={() => setIndustriesOpen((v) => !v)}
+          />
           {industriesOpen && (
             <div className="pb-5">
               <p className="eyebrow text-rust text-sm mb-2">What we focus on</p>
@@ -87,12 +106,39 @@ export default function MobileMenu({ open, onClose, id }: MobileMenuProps) {
           )}
         </div>
 
+        {/* Coverage accordion */}
+        <div className="border-b border-sand/10">
+          <AccordionToggle
+            label="Coverage"
+            isOpen={coverageOpen}
+            onToggle={() => setCoverageOpen((v) => !v)}
+          />
+          {coverageOpen && (
+            <div className="pb-5">
+              <p className="eyebrow text-rust text-sm mb-2">Lines of coverage</p>
+              <ul className="space-y-1">
+                {coverageLines.map((c) => (
+                  <li key={c.name}>
+                    <Link
+                      href="/solutions"
+                      onClick={onClose}
+                      className="block py-2 text-sand/90 hover:text-white"
+                    >
+                      {c.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
         {/* Remaining top-level links (Solutions, About) */}
         {mainNav
-          .filter((item) => !item.hasMegaMenu)
+          .filter((item) => !item.menu)
           .map((item) => (
             <Link
-              key={item.href}
+              key={item.label}
               href={item.href}
               onClick={onClose}
               className="block border-b border-sand/10 py-4 font-heading text-xl"

@@ -23,14 +23,14 @@ export const PRIMARY_CTA = {
 export type NavItem = {
   label: string;
   href: string;
-  /** True when this item opens the Industries mega-menu. */
-  hasMegaMenu?: boolean;
+  /** If set, this item opens a dropdown panel instead of being a plain link. */
+  menu?: "industries" | "coverage";
 };
 
-/** Top nav: logo (Home) · Industries · Solutions · About · [CTA]. */
+/** Top nav: logo (Home) · Industries · Coverage · Solutions · About · [CTA]. */
 export const mainNav: NavItem[] = [
-  { label: "Coverage", href: "/industries", hasMegaMenu: true },
-  { label: "Industries", href: "/industries" },
+  { label: "Industries", href: "/industries", menu: "industries" },
+  { label: "Coverage", href: "/solutions", menu: "coverage" },
   { label: "Solutions", href: "/solutions" },
   { label: "About", href: "/about" },
 ];

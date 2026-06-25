@@ -54,7 +54,7 @@ export default function Footer() {
               </h2>
               <ul className="space-y-2.5">
                 {group.items.map((item) => (
-                  <li key={item.href}>
+                  <li key={item.label}>
                     <Link
                       href={item.href}
                       className="text-sand/80 hover:text-white transition-colors text-sm"
