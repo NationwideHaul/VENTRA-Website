@@ -5,8 +5,11 @@ import Link from "next/link";
 import Reveal from "@/components/motion/Reveal";
 import CTAButton from "@/components/ui/CTAButton";
 import { heroIndustries } from "@/data/industries";
-import { usStates } from "@/data/states";
 import { PRIMARY_CTA } from "@/data/site";
+
+// Real Estate is shown on the /industries page and contact form, but omitted
+// from the home "Explore by industry" tiles.
+const homeIndustries = heroIndustries.filter((i) => i.slug !== "real-estate");
 
 /**
  * Hero industry selector (Progressive-style "select a property type").
@@ -16,7 +19,7 @@ import { PRIMARY_CTA } from "@/data/site";
  * top edge of each tile; the chosen industry is carried into the Find an
  * Agent form (and a query param on the no-JS fallback link).
  *
- * No zip code / instant-quote field — this is a consultative flow.
+ * Collects a ZIP code (not an instant-quote field) — this is a consultative flow.
  */
 
 // Change to "svg" if you drop SVG art into /public/branding/illustrations.
@@ -98,17 +101,17 @@ function MoreArt() {
 
 export default function HeroIndustrySelector() {
   const [selected, setSelected] = useState<string | null>(null);
-  const [stateCode, setStateCode] = useState("");
+  const [zip, setZip] = useState("");
 
   // No-JS fallback link (the button otherwise opens the form modal).
   const params = new URLSearchParams();
   if (selected) params.set("industry", selected);
-  if (stateCode) params.set("state", stateCode);
+  if (zip) params.set("zip", zip);
   const fallbackHref = params.toString()
     ? `${PRIMARY_CTA.href}?${params.toString()}`
     : PRIMARY_CTA.href;
 
-  const tileCount = heroIndustries.length + 1; // industries + "More"
+  const tileCount = homeIndustries.length + 1; // industries + "More"
 
   return (
     <div className="w-full">
@@ -119,9 +122,9 @@ export default function HeroIndustrySelector() {
       <div
         role="group"
         aria-label="Select your industry"
-        className="mx-auto grid max-w-6xl grid-cols-2 gap-x-4 gap-y-12 pt-14 sm:grid-cols-3 lg:grid-cols-6"
+        className="mx-auto grid max-w-6xl grid-cols-2 gap-x-4 gap-y-12 pt-14 sm:grid-cols-3 lg:grid-cols-5"
       >
-        {heroIndustries.map((t, i) => {
+        {homeIndustries.map((t, i) => {
           const isSelected = selected === t.slug;
           return (
             <Reveal key={t.slug} delay={140 + i * 70}>
@@ -138,7 +141,7 @@ export default function HeroIndustrySelector() {
                 <span className="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2">
                   <TileArt slug={t.slug} />
                 </span>
-                <span className="text-sm font-medium leading-snug text-ink">
+                <span className="font-heading text-sm font-medium leading-snug text-ink">
                   {t.label}
                 </span>
               </button>
@@ -147,50 +150,50 @@ export default function HeroIndustrySelector() {
         })}
 
         {/* More industries — links to the Industries page */}
-        <Reveal delay={140 + heroIndustries.length * 70}>
+        <Reveal delay={140 + homeIndustries.length * 70}>
           <Link href="/industries" className={`${TILE_BASE} ${TILE_IDLE}`}>
             <span className="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2">
               <MoreArt />
             </span>
-            <span className="text-sm font-medium leading-snug text-ink">
+            <span className="font-heading text-sm font-medium leading-snug text-ink">
               View more industries
             </span>
           </Link>
         </Reveal>
       </div>
 
-      {/* Location selector + CTA on one row (no zip / quote field) */}
+      {/* ZIP + CTA on one row */}
       <Reveal
         delay={140 + tileCount * 70}
         className="mt-12 flex flex-wrap items-end justify-center gap-4"
       >
         <div className="flex flex-col">
           <label
-            htmlFor="hero-state"
-            className="mb-2 text-sm font-medium text-ink/70"
+            htmlFor="hero-zip"
+            className="mb-2 font-heading text-sm font-medium text-ink/70"
           >
-            Where is your business located?
+            What&rsquo;s your ZIP code?
           </label>
-          <select
-            id="hero-state"
-            value={stateCode}
-            onChange={(e) => setStateCode(e.target.value)}
-            className="h-13 w-full min-w-[15rem] rounded-full border border-ink/15 bg-white px-5 text-center text-ink transition focus:border-rust focus:outline-none focus:ring-2 focus:ring-rust/30"
-          >
-            <option value="">Select your state</option>
-            {usStates.map((s) => (
-              <option key={s.code} value={s.code}>
-                {s.name}
-              </option>
-            ))}
-          </select>
+          <input
+            id="hero-zip"
+            name="zip"
+            type="text"
+            inputMode="numeric"
+            autoComplete="postal-code"
+            pattern="[0-9]{5}"
+            maxLength={5}
+            placeholder="Enter ZIP code"
+            value={zip}
+            onChange={(e) => setZip(e.target.value.replace(/\D/g, "").slice(0, 5))}
+            className="h-13 w-full min-w-[15rem] rounded-full border border-ink/15 bg-white px-5 text-center text-ink placeholder:text-ink/35 transition focus:border-rust focus:outline-none focus:ring-2 focus:ring-rust/30"
+          />
         </div>
         <CTAButton
           href={fallbackHref}
           size="lg"
           prefill={{
             industry: selected ?? undefined,
-            state: stateCode || undefined,
+            zip: zip || undefined,
           }}
         />
       </Reveal>

@@ -27,12 +27,12 @@ export type NavItem = {
   menu?: "industries" | "coverage";
 };
 
-/** Top nav: logo (Home) · Industries · Coverage · Solutions · About · [CTA]. */
+/** Top nav: logo (Home) · Industries · Coverage · About · Contact Us · [CTA]. */
 export const mainNav: NavItem[] = [
   { label: "Industries", href: "/industries", menu: "industries" },
   { label: "Coverage", href: "/solutions", menu: "coverage" },
-  { label: "Solutions", href: "/solutions" },
   { label: "About", href: "/about" },
+  { label: "Contact Us", href: "/contact" },
 ];
 
 /**

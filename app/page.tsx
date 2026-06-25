@@ -59,13 +59,13 @@ export default function HomePage() {
             <Reveal>
               <h1 className="mx-auto max-w-[15ch] text-balance text-5xl text-white sm:text-6xl lg:text-7xl">
                 Insurance for businesses that have{" "}
-                <span className="font-accent italic text-rust">
+                <span className="font-accent italic text-white">
                   too much to lose.
                 </span>
               </h1>
             </Reveal>
             <Reveal delay={100}>
-              <p className="mx-auto mt-7 max-w-[60ch] text-lg leading-relaxed text-white/85 sm:text-xl">
+              <p className="mx-auto mt-7 max-w-full text-lg leading-relaxed text-white/85 sm:whitespace-nowrap sm:text-xl">
                 Commercial insurance tailored to your business, with a dedicated
                 advisor who fights for your interests.
               </p>
@@ -83,14 +83,50 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Positioning strip */}
-      <Section>
-        <p className="font-accent text-2xl sm:text-3xl text-ink/90 max-w-3xl leading-snug">
-          A strategic protection partner, not a transactional quote shop. We
-          structure coverage around what you&rsquo;ve built and advocate for you,
-          especially at claim time.
-        </p>
-      </Section>
+      {/* Positioning — designed feature band. The dark band creates a clear
+          break between the hero/selector above and the "Specialist depth"
+          showcase below. Two-column card: branded visual + the statement. */}
+      <section className="bg-ink text-white">
+        <div className="container-page py-[var(--spacing-section)]">
+          <Reveal>
+            <div className="mx-auto grid max-w-6xl overflow-hidden rounded-3xl shadow-2xl ring-1 ring-white/10 lg:grid-cols-2">
+              {/* Left: branded rust panel with oversized submark watermark */}
+              <div className="relative flex min-h-[18rem] items-end overflow-hidden bg-gradient-to-br from-rust to-[#7a2410] p-9 sm:p-11">
+                <Image
+                  src="/logos/ventra-submark-sand.png"
+                  alt=""
+                  width={4677}
+                  height={3984}
+                  unoptimized
+                  aria-hidden
+                  className="pointer-events-none absolute -right-12 -top-16 w-72 opacity-[0.14] sm:w-80"
+                />
+                <div className="relative">
+                  <p className="eyebrow text-lg text-sand">The Ventra approach</p>
+                  <p className="mt-2 font-heading text-2xl text-white sm:text-[1.6rem]">
+                    Coverage built around what you&rsquo;ve built.
+                  </p>
+                </div>
+              </div>
+
+              {/* Right: the positioning statement */}
+              <div className="flex flex-col justify-center bg-charcoal p-9 sm:p-12">
+                <p className="font-accent text-2xl leading-snug text-white sm:text-[1.75rem]">
+                  A strategic protection partner, not a transactional quote
+                  shop.
+                </p>
+                <p className="mt-5 leading-relaxed text-white/65">
+                  We structure coverage around what you&rsquo;ve built and
+                  advocate for you &mdash; especially at claim time.
+                </p>
+                <div className="mt-8">
+                  <CTAButton variant="outline" />
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
       {/* Specialist depth — scroll-triggered sticky showcase */}
       <SpecialtyShowcase />

@@ -11,20 +11,19 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { heroIndustries } from "@/data/industries";
-import { usStates } from "@/data/states";
 
 /**
  * Global "Find an Agent" contact modal.
  *
  * Any CTA (header, hero, footer, pages) opens the same form via
  * useContactModal().open(prefill). The hero passes the chosen industry and
- * state so they arrive pre-filled. Submits to /api/contact and, on success,
+ * ZIP code so they arrive pre-filled. Submits to /api/contact and, on success,
  * routes to /thank-you. This is a consultative contact form — not a quote.
  */
 
 export type ContactPrefill = {
   industry?: string; // specialty slug or "other"
-  state?: string; // state code
+  zip?: string; // 5-digit ZIP code
 };
 
 type ContactModalCtx = {
@@ -272,22 +271,21 @@ function ContactModal({
               </select>
             </div>
             <div>
-              <label htmlFor="state" className={labelCls}>
-                State
+              <label htmlFor="zip" className={labelCls}>
+                ZIP code
               </label>
-              <select
-                id="state"
-                name="state"
-                defaultValue={prefill.state ?? ""}
+              <input
+                id="zip"
+                name="zip"
+                type="text"
+                inputMode="numeric"
+                autoComplete="postal-code"
+                pattern="[0-9]{5}"
+                maxLength={5}
+                placeholder="12345"
+                defaultValue={prefill.zip ?? ""}
                 className={field}
-              >
-                <option value="">Select…</option>
-                {usStates.map((s) => (
-                  <option key={s.code} value={s.code}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
           </div>
 
