@@ -1,24 +1,17 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import Reveal from "@/components/motion/Reveal";
-import CTAButton from "@/components/ui/CTAButton";
 import { heroIndustries } from "@/data/industries";
-import { PRIMARY_CTA } from "@/data/site";
 
 // The home grid shows all hero industries plus a "View more" tile (8 cells).
 const homeIndustries = heroIndustries;
 
 /**
- * Hero industry selector (Progressive-style "select a property type").
+ * Hero industry selector.
  *
- * Selectable tiles for the broad industries, plus a "More industries" tile
- * that links to the /industries page. The illustration breaks out above the
- * top edge of each tile; the chosen industry is carried into the Find an
- * Agent form (and a query param on the no-JS fallback link).
- *
- * Collects a ZIP code (not an instant-quote field) — this is a consultative flow.
+ * A tile per broad industry plus a "More industries" tile. Selecting an
+ * industry takes the visitor to the contact page with that industry
+ * pre-selected; the "More industries" tile goes to the /industries page.
+ * The illustration breaks out above the top edge of each tile.
  */
 
 // Change to "svg" if you drop SVG art into /public/branding/illustrations.
@@ -108,19 +101,6 @@ function MoreArt() {
 }
 
 export default function HeroIndustrySelector() {
-  const [selected, setSelected] = useState<string | null>(null);
-  const [zip, setZip] = useState("");
-
-  // No-JS fallback link (the button otherwise opens the form modal).
-  const params = new URLSearchParams();
-  if (selected) params.set("industry", selected);
-  if (zip) params.set("zip", zip);
-  const fallbackHref = params.toString()
-    ? `${PRIMARY_CTA.href}?${params.toString()}`
-    : PRIMARY_CTA.href;
-
-  const tileCount = homeIndustries.length + 1; // industries + "More"
-
   return (
     <div className="w-full">
       <Reveal delay={100}>
@@ -128,34 +108,24 @@ export default function HeroIndustrySelector() {
       </Reveal>
 
       <div
-        role="group"
-        aria-label="Select your industry"
+        aria-label="Explore by industry"
         className="mx-auto grid max-w-6xl grid-cols-2 gap-x-4 gap-y-16 pt-16 sm:grid-cols-4"
       >
-        {homeIndustries.map((t, i) => {
-          const isSelected = selected === t.slug;
-          return (
-            <Reveal key={t.slug} delay={140 + i * 70}>
-              <button
-                type="button"
-                aria-pressed={isSelected}
-                onClick={() => setSelected(t.slug)}
-                className={`${TILE_BASE} ${
-                  isSelected
-                    ? "border-2 border-rust bg-rust/[0.04] shadow-md"
-                    : TILE_IDLE
-                }`}
-              >
-                <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2">
-                  <TileArt slug={t.slug} />
-                </span>
-                <span className="font-heading text-sm font-medium leading-snug text-ink">
-                  {t.label}
-                </span>
-              </button>
-            </Reveal>
-          );
-        })}
+        {homeIndustries.map((t, i) => (
+          <Reveal key={t.slug} delay={140 + i * 70}>
+            <Link
+              href={`/contact?industry=${t.slug}`}
+              className={`${TILE_BASE} ${TILE_IDLE}`}
+            >
+              <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2">
+                <TileArt slug={t.slug} />
+              </span>
+              <span className="font-heading text-sm font-medium leading-snug text-ink">
+                {t.label}
+              </span>
+            </Link>
+          </Reveal>
+        ))}
 
         {/* More industries — links to the Industries page */}
         <Reveal delay={140 + homeIndustries.length * 70}>
@@ -169,42 +139,6 @@ export default function HeroIndustrySelector() {
           </Link>
         </Reveal>
       </div>
-
-      {/* ZIP + CTA on one row */}
-      <Reveal
-        delay={140 + tileCount * 70}
-        className="mt-12 flex flex-wrap items-end justify-center gap-4"
-      >
-        <div className="flex flex-col">
-          <label
-            htmlFor="hero-zip"
-            className="mb-2 font-heading text-sm font-medium text-ink/70"
-          >
-            What&rsquo;s your ZIP code?
-          </label>
-          <input
-            id="hero-zip"
-            name="zip"
-            type="text"
-            inputMode="numeric"
-            autoComplete="postal-code"
-            pattern="[0-9]{5}"
-            maxLength={5}
-            placeholder="Enter ZIP code"
-            value={zip}
-            onChange={(e) => setZip(e.target.value.replace(/\D/g, "").slice(0, 5))}
-            className="h-13 w-full min-w-[15rem] rounded-full border border-ink/15 bg-white px-5 text-center text-ink placeholder:text-ink/35 transition focus:border-rust focus:outline-none focus:ring-2 focus:ring-rust/30"
-          />
-        </div>
-        <CTAButton
-          href={fallbackHref}
-          size="lg"
-          prefill={{
-            industry: selected ?? undefined,
-            zip: zip || undefined,
-          }}
-        />
-      </Reveal>
     </div>
   );
 }
