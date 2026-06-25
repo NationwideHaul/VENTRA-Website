@@ -159,33 +159,32 @@ export default function HeroIndustrySelector() {
         </Reveal>
       </div>
 
-      {/* Location — a state selector (kept consultative; no zip / quote field) */}
+      {/* Location selector + CTA on one row (no zip / quote field) */}
       <Reveal
         delay={140 + tileCount * 70}
-        className="mt-12 flex flex-col items-center"
+        className="mt-12 flex flex-wrap items-end justify-center gap-4"
       >
-        <label
-          htmlFor="hero-state"
-          className="mb-2 text-sm font-medium text-ink/70"
-        >
-          Where is your business located?
-        </label>
-        <select
-          id="hero-state"
-          value={stateCode}
-          onChange={(e) => setStateCode(e.target.value)}
-          className="w-full max-w-xs rounded-full border border-ink/15 bg-white px-5 py-2.5 text-center text-ink transition focus:border-rust focus:outline-none focus:ring-2 focus:ring-rust/30"
-        >
-          <option value="">Select your state</option>
-          {usStates.map((s) => (
-            <option key={s.code} value={s.code}>
-              {s.name}
-            </option>
-          ))}
-        </select>
-      </Reveal>
-
-      <Reveal delay={210 + tileCount * 70} className="mt-10 flex justify-center">
+        <div className="flex flex-col">
+          <label
+            htmlFor="hero-state"
+            className="mb-2 text-sm font-medium text-ink/70"
+          >
+            Where is your business located?
+          </label>
+          <select
+            id="hero-state"
+            value={stateCode}
+            onChange={(e) => setStateCode(e.target.value)}
+            className="h-13 w-full min-w-[15rem] rounded-full border border-ink/15 bg-white px-5 text-center text-ink transition focus:border-rust focus:outline-none focus:ring-2 focus:ring-rust/30"
+          >
+            <option value="">Select your state</option>
+            {usStates.map((s) => (
+              <option key={s.code} value={s.code}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </div>
         <CTAButton
           href={fallbackHref}
           size="lg"

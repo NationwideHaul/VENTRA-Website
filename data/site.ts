@@ -11,7 +11,7 @@ export const site = {
   shortName: "Ventra",
   domain: "ventrainsurance.com",
   description:
-    "Strategic protection for established businesses. Work directly with a dedicated advisor who knows your business and advocates for it.",
+    "Commercial insurance tailored to your business, with a dedicated advisor who fights for your interests.",
 } as const;
 
 /** The one and only primary call to action. */

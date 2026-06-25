@@ -37,7 +37,7 @@ export default function HomePage() {
     <>
       {/* Hero — full-width image, white headline, selector card overlapping */}
       <section className="relative">
-        <div className="relative flex min-h-[66vh] w-full items-center justify-center overflow-hidden sm:min-h-[70vh]">
+        <div className="relative w-full overflow-hidden">
           <Image
             src="/hero.jpg"
             alt=""
@@ -55,16 +55,19 @@ export default function HomePage() {
             className="absolute inset-0 bg-gradient-to-b from-ink/80 via-ink/55 to-ink/80"
           />
 
-          <div className="relative container-page pb-28 text-center sm:pb-32">
+          <div className="relative container-page pt-[clamp(5rem,12vh,9rem)] pb-[clamp(10rem,20vh,15rem)] text-center">
             <Reveal>
-              <h1 className="mx-auto max-w-[15ch] text-balance text-5xl text-white underline decoration-rust decoration-2 underline-offset-[0.2em] sm:text-6xl lg:text-7xl">
-                Insurance for businesses that have too much to lose.
+              <h1 className="mx-auto max-w-[15ch] text-balance text-5xl text-white sm:text-6xl lg:text-7xl">
+                Insurance for businesses that have{" "}
+                <span className="font-accent italic text-rust-bright">
+                  too much to lose.
+                </span>
               </h1>
             </Reveal>
             <Reveal delay={100}>
-              <p className="mx-auto mt-6 max-w-[60ch] text-lg leading-relaxed text-white/85 sm:text-xl">
-                Strategic protection for established businesses, with a dedicated
-                advisor who knows your business and advocates for it.
+              <p className="mx-auto mt-7 max-w-[60ch] text-lg leading-relaxed text-white/85 sm:text-xl">
+                Commercial insurance tailored to your business, with a dedicated
+                advisor who fights for your interests.
               </p>
             </Reveal>
           </div>
