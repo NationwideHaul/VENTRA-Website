@@ -35,8 +35,9 @@ const FEATURES = [
 export default function HomePage() {
   return (
     <>
-      {/* Hero — full-width image, white headline, selector card overlapping */}
-      <section className="relative">
+      {/* Hero — full-width image, white headline, selector card overlapping.
+          Sand backdrop fills below the image so the white selector card pops. */}
+      <section className="relative bg-sand">
         <div className="relative w-full overflow-hidden">
           <Image
             src="/hero.jpg"
@@ -83,13 +84,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Positioning — designed feature band. The dark band creates a clear
-          break between the hero/selector above and the "Specialist depth"
-          showcase below. Two-column card: branded visual + the statement. */}
-      <section className="bg-ink text-white">
+      {/* Positioning — designed feature card on a sand backdrop. The dark
+          two-column card (branded visual + statement) pops against the sand. */}
+      <section className="bg-sand">
         <div className="container-page py-[var(--spacing-section)]">
           <Reveal>
-            <div className="mx-auto grid max-w-6xl overflow-hidden rounded-3xl shadow-2xl ring-1 ring-white/10 lg:grid-cols-2">
+            <div className="mx-auto grid max-w-6xl overflow-hidden rounded-3xl shadow-2xl ring-1 ring-ink/10 lg:grid-cols-2">
               {/* Left: branded rust panel with oversized submark watermark */}
               <div className="relative flex min-h-[18rem] items-end overflow-hidden bg-gradient-to-br from-rust to-[#7a2410] p-9 sm:p-11">
                 <Image
@@ -131,33 +131,51 @@ export default function HomePage() {
       {/* Specialist depth — scroll-triggered sticky showcase */}
       <SpecialtyShowcase />
 
-      {/* Supporting feature checks */}
-      <Section className="bg-white" innerClassName="max-w-5xl">
-        <div className="grid gap-x-12 gap-y-8 sm:grid-cols-2">
-          {FEATURES.map((f, i) => (
-            <Reveal key={f.title} delay={i * 70}>
-              <div className="flex gap-4">
-                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rust/10">
-                  <svg
-                    viewBox="0 0 20 20"
-                    className="h-3.5 w-3.5 text-rust"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden
-                  >
-                    <path d="m4 10.5 4 4 8-9" />
-                  </svg>
-                </span>
-                <div>
-                  <h3 className="font-heading text-lg text-ink">{f.title}</h3>
-                  <p className="mt-1 text-ink/65">{f.desc}</p>
-                </div>
-              </div>
-            </Reveal>
-          ))}
+      {/* Why Ventra — image + four selling points (editorial stat layout) */}
+      <Section className="bg-white">
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+          {/* Left: layered photo with a rust-tinted offset panel behind */}
+          <div className="relative mx-auto w-full max-w-md lg:mx-0">
+            <div
+              aria-hidden
+              className="absolute -left-5 -top-5 bottom-8 right-10 rounded-3xl bg-rust/15 sm:-left-7 sm:-top-7"
+            />
+            <div className="relative overflow-hidden rounded-3xl shadow-2xl ring-1 ring-ink/10">
+              <Image
+                src="/hero.jpg"
+                alt="A Ventra advisor meeting with a business owner"
+                width={1200}
+                height={1500}
+                unoptimized
+                className="aspect-[4/5] w-full object-cover"
+              />
+            </div>
+          </div>
+
+          {/* Right: eyebrow, heading, and the four selling points */}
+          <div>
+            <p className="font-heading text-sm font-semibold uppercase tracking-[0.18em] text-ink">
+              Why Ventra
+            </p>
+            <div className="mt-3 h-0.5 w-16 bg-rust" />
+
+            <h2 className="mt-6 font-accent text-4xl leading-[1.1] text-ink sm:text-5xl">
+              Protection is where we start, not where we stop.
+            </h2>
+
+            <div className="mt-10 grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2">
+              {FEATURES.map((f, i) => (
+                <Reveal key={f.title} delay={i * 70}>
+                  <div className="border-b border-ink/15 pb-5">
+                    <p className="font-accent text-2xl italic leading-tight text-rust sm:text-[1.75rem]">
+                      {f.title}
+                    </p>
+                    <p className="mt-2 leading-relaxed text-ink/65">{f.desc}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
         </div>
       </Section>
 
