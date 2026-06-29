@@ -86,7 +86,7 @@ export default function HomePage() {
                 <br />
                 businesses that have
                 <span className="mt-1 block font-accent text-[1.05em] font-semibold italic">
-                  too much to lose.
+                  bigger plans.
                 </span>
               </h1>
             </Reveal>
