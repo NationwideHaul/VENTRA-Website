@@ -12,7 +12,7 @@
  * duplicate is aria-hidden, and the global reduced-motion rule freezes it.
  */
 
-type Carrier = { name: string; src: string };
+type Carrier = { name: string; src: string; className?: string };
 
 // `?v=2` cache-busts: the originals were overwritten with background-removed
 // versions at the same path, so the browser would otherwise serve the stale
@@ -20,14 +20,22 @@ type Carrier = { name: string; src: string };
 const CARRIERS: Carrier[] = [
   { name: "Travelers", src: "/carriers/travelers.png?v=2" },
   { name: "The Hartford", src: "/carriers/hartford.png?v=2" },
-  { name: "Chubb", src: "/carriers/chubb.png?v=2" },
+  // Chubb sits high against the others — nudge it down to share the baseline.
+  { name: "Chubb", src: "/carriers/chubb.png?v=2", className: "h-7 sm:h-8 translate-y-1.5" },
   { name: "AIG", src: "/carriers/aig.svg?v=2" },
-  { name: "Nationwide", src: "/carriers/nationwide.png?v=2" },
+  // Nationwide reads small at the shared height — give it a larger one.
+  { name: "Nationwide", src: "/carriers/nationwide.png?v=2", className: "h-10 sm:h-12" },
   { name: "Markel", src: "/carriers/markel.png?v=2" },
-  { name: "Progressive", src: "/carriers/progressive.png?v=2" },
+  // Progressive reads large — pull it back down a notch.
+  { name: "Progressive", src: "/carriers/progressive.png?v=2", className: "h-5 sm:h-6" },
   { name: "GEICO", src: "/carriers/geico.png?v=2" },
   { name: "Prime Insurance", src: "/carriers/prime.png?v=2" },
 ];
+
+// Shared height; individual carriers override it (and add transforms) via
+// `carrier.className` so a logo's intrinsic weight doesn't make it read big
+// or small against the rest.
+const DEFAULT_SIZE = "h-7 sm:h-8";
 
 function Logo({ carrier }: { carrier: Carrier }) {
   return (
@@ -35,7 +43,9 @@ function Logo({ carrier }: { carrier: Carrier }) {
     <img
       src={carrier.src}
       alt={carrier.name}
-      className="mr-14 h-7 w-auto shrink-0 object-contain opacity-70 [filter:grayscale(1)] sm:mr-20 sm:h-8"
+      className={`mr-14 w-auto shrink-0 object-contain opacity-70 [filter:grayscale(1)] sm:mr-20 ${
+        carrier.className ?? DEFAULT_SIZE
+      }`}
     />
   );
 }

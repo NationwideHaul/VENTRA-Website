@@ -104,7 +104,7 @@ export default function HeroIndustrySelector() {
 
       <div
         aria-label="Explore by industry"
-        className="mx-auto grid max-w-6xl grid-cols-2 gap-x-4 gap-y-16 pt-16 sm:grid-cols-4"
+        className="mx-auto grid max-w-6xl grid-cols-2 gap-x-4 gap-y-16 pt-12 pb-6 sm:grid-cols-4"
       >
         {homeIndustries.map((t, i) => (
           <Reveal key={t.slug} delay={140 + i * 70}>

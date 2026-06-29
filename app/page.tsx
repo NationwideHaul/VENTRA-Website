@@ -6,22 +6,24 @@ import HeroIndustrySelector from "@/components/home/HeroIndustrySelector";
 import SpecialtyShowcase from "@/components/home/SpecialtyShowcase";
 import CarrierMarquee from "@/components/home/CarrierMarquee";
 
+// Our four selling points, ordered: point 1 is the anchor (depth-first), the
+// rest support it. Each is framed as the benefit the client walks away with.
 const FEATURES = [
   {
-    title: "Dedicated advisor",
-    desc: "Work directly with one advisor who knows your business.",
+    title: "We understand your business first",
+    desc: "Before we recommend any coverage, we learn how your business actually operates — so you get a program built around you, not a template pulled off a shelf.",
   },
   {
-    title: "Claims advocacy",
-    desc: "We advocate for you, especially at claim time.",
+    title: "We find the gaps others miss",
+    desc: "Most agents sell you what you ask for. We surface the exposures a once-a-year agent overlooks — so there are fewer surprises when a claim is finally tested.",
   },
   {
-    title: "Risk management",
-    desc: "Expertise that helps you navigate uncertainty with confidence.",
+    title: "Specialized depth in your industry",
+    desc: "We know construction, storage, habitational, real estate, hospitality, healthcare, and logistics at a level a generalist can't — an advisor who speaks your language on day one.",
   },
   {
-    title: "Built to scale",
-    desc: "Protection that grows with the scale of your ambition.",
+    title: "A relationship, not a transaction",
+    desc: "We stay engaged as your business changes, adjusting coverage as you grow — instead of an agent you see once a year and coverage that goes stale.",
   },
 ];
 
@@ -60,7 +62,10 @@ export default function HomePage() {
           <div className="relative container-page pt-[clamp(5rem,12vh,9rem)] pb-[clamp(13rem,26vh,19rem)] text-center">
             <Reveal>
               <h1 className="mx-auto max-w-[15ch] text-balance text-5xl text-white sm:text-6xl lg:text-7xl">
-                Insurance for businesses that have too much to lose.
+                Insurance for businesses that have{" "}
+                <span className="font-accent font-normal italic">
+                  too much to lose.
+                </span>
               </h1>
             </Reveal>
             <Reveal delay={100}>
@@ -84,13 +89,17 @@ export default function HomePage() {
 
       {/* Carrier partners — white band; sections divided by hairlines, not color */}
       <section className="bg-white">
-        <div className="container-page py-[var(--spacing-section)]">
+        <div className="container-page pb-[var(--spacing-section)] pt-[clamp(1.5rem,3.5vw,3rem)]">
           <div className="mx-auto max-w-6xl text-center">
             <Reveal>
               <p className="eyebrow text-rust">Carrier partners</p>
               <h2 className="mt-2 font-heading text-2xl text-ink sm:text-3xl">
                 Backed by the nation&rsquo;s leading carriers.
               </h2>
+              <p className="mx-auto mt-3 max-w-xl text-ink/60">
+                Licensed in 48 states, with access to hundreds of competitive
+                programs.
+              </p>
             </Reveal>
           </div>
           <div className="mt-10">
