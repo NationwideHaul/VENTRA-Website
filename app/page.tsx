@@ -27,6 +27,26 @@ const FEATURES = [
   },
 ];
 
+// The three steps of working with us — rendered as a connected, arrow-driven
+// journey (echoes the brand's "forward arrow" motif).
+const PROCESS = [
+  {
+    n: "01",
+    t: "Tell us about your business",
+    d: "Fill out a short form so we understand how you actually operate.",
+  },
+  {
+    n: "02",
+    t: "We build your plan",
+    d: "An advisor reaches out and prepares coverage around your real exposures.",
+  },
+  {
+    n: "03",
+    t: "Get covered",
+    d: "Put protection in place — with an advisor who stays with you as you grow.",
+  },
+];
+
 /**
  * Home — phase-1 placeholder.
  *
@@ -167,6 +187,72 @@ export default function HomePage() {
           </div>
         </div>
       </Section>
+
+      {/* The process — a connected, arrow-driven journey (brand "forward" motif) */}
+      <section className="relative overflow-hidden bg-ink text-sand">
+        <div className="container-page py-[clamp(4.5rem,9vw,8rem)]">
+          <div className="max-w-2xl">
+            <p className="eyebrow text-rust">The process</p>
+            <h2 className="mt-2 font-heading text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
+              From first hello to fully covered.
+            </h2>
+            <p className="mt-4 text-lg leading-relaxed text-sand/70">
+              No pressure and no jargon — just a clear path to coverage that
+              fits.
+            </p>
+          </div>
+
+          <ol className="relative mt-20 grid gap-y-16 sm:grid-cols-3 sm:gap-x-8">
+            {/* connecting rail behind the badges (desktop) */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute left-7 right-7 top-7 hidden h-px bg-gradient-to-r from-rust via-rust/50 to-rust/10 sm:block"
+            />
+            {PROCESS.map((s, i) => (
+              <Reveal key={s.n} delay={i * 110}>
+                <li className="relative">
+                  {/* oversized ghost numeral */}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute -top-14 right-0 font-heading text-8xl font-bold leading-none text-white/[0.05] sm:text-9xl"
+                  >
+                    {s.n}
+                  </span>
+
+                  {/* node badge on the rail + forward arrow toward the next step */}
+                  <div className="relative z-10 flex items-center gap-4">
+                    <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-rust font-heading text-lg font-bold text-white shadow-lg shadow-rust/30">
+                      {s.n}
+                    </span>
+                    {i < PROCESS.length - 1 && (
+                      <svg
+                        aria-hidden
+                        viewBox="0 0 40 16"
+                        className="hidden h-4 w-10 text-rust/60 sm:block"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M0 8h34" />
+                        <path d="M28 2l6 6-6 6" />
+                      </svg>
+                    )}
+                  </div>
+
+                  <h3 className="mt-7 font-heading text-xl text-white sm:text-2xl">
+                    {s.t}
+                  </h3>
+                  <p className="mt-3 max-w-xs leading-relaxed text-sand/70">
+                    {s.d}
+                  </p>
+                </li>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </section>
 
       {/* Final CTA band */}
       <section className="bg-rust text-white">

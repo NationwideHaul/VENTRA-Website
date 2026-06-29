@@ -95,6 +95,30 @@ function MoreArt() {
   );
 }
 
+/** Art for the "Find Your Business" tile — a building icon (distinct from the
+ *  magnifying glass used by "View more industries"). */
+function FindArt() {
+  return (
+    <span className="flex h-24 w-36 items-center justify-center">
+      <svg
+        viewBox="0 0 24 24"
+        className="h-20 w-20 text-rust"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+      >
+        <path d="M3 21h18" />
+        <path d="M5 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16" />
+        <path d="M15 21V9h3a1 1 0 0 1 1 1v11" />
+        <path d="M8 8h2M8 12h2M8 16h2" />
+      </svg>
+    </span>
+  );
+}
+
 export default function HeroIndustrySelector() {
   return (
     <div className="w-full">
@@ -130,6 +154,18 @@ export default function HeroIndustrySelector() {
             </span>
             <span className="font-heading text-sm font-medium leading-snug text-ink">
               View more industries
+            </span>
+          </Link>
+        </Reveal>
+
+        {/* Find your business — catch-all tile, links to the contact flow */}
+        <Reveal delay={140 + (homeIndustries.length + 1) * 70}>
+          <Link href="/contact" className={`${TILE_BASE} ${TILE_IDLE}`}>
+            <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2">
+              <FindArt />
+            </span>
+            <span className="font-heading text-sm font-medium leading-snug text-ink">
+              Find Your Business
             </span>
           </Link>
         </Reveal>

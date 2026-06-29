@@ -24,14 +24,15 @@ export type NavItem = {
   label: string;
   href: string;
   /** If set, this item opens a dropdown panel instead of being a plain link. */
-  menu?: "industries" | "coverage";
+  menu?: "industries" | "coverage" | "support";
 };
 
-/** Top nav: logo (Home) · Industries · Coverage · About · Contact Us · [CTA]. */
+/** Top nav: logo (Home) · Industries · Coverage · About · Support · Contact Us · [CTA]. */
 export const mainNav: NavItem[] = [
   { label: "Industries", href: "/industries", menu: "industries" },
   { label: "Coverage", href: "/solutions", menu: "coverage" },
   { label: "About", href: "/about" },
+  { label: "Support", href: "/faq", menu: "support" },
   { label: "Contact Us", href: "/contact" },
 ];
 

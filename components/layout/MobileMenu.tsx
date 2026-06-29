@@ -49,6 +49,7 @@ function AccordionToggle({
 export default function MobileMenu({ open, onClose, id }: MobileMenuProps) {
   const [industriesOpen, setIndustriesOpen] = useState(true);
   const [coverageOpen, setCoverageOpen] = useState(false);
+  const [supportOpen, setSupportOpen] = useState(false);
 
   return (
     <div
@@ -143,7 +144,38 @@ export default function MobileMenu({ open, onClose, id }: MobileMenuProps) {
           )}
         </div>
 
-        {/* Remaining top-level links (Solutions, About) */}
+        {/* Support accordion */}
+        <div className="border-b border-sand/10">
+          <AccordionToggle
+            label="Support"
+            isOpen={supportOpen}
+            onToggle={() => setSupportOpen((v) => !v)}
+          />
+          {supportOpen && (
+            <ul className="pb-5">
+              <li>
+                <Link
+                  href="/faq"
+                  onClick={onClose}
+                  className="block py-2 text-sand/90 hover:text-white"
+                >
+                  FAQs
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/report-a-claim"
+                  onClick={onClose}
+                  className="block py-2 text-sand/90 hover:text-white"
+                >
+                  Report a claim
+                </Link>
+              </li>
+            </ul>
+          )}
+        </div>
+
+        {/* Remaining top-level links (About, Contact Us) */}
         {mainNav
           .filter((item) => !item.menu)
           .map((item) => (

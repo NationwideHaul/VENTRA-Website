@@ -7,14 +7,16 @@ import Logo from "@/components/ui/Logo";
 import CTAButton from "@/components/ui/CTAButton";
 import MegaMenu from "./MegaMenu";
 import CoverageMenu from "./CoverageMenu";
+import SupportMenu from "./SupportMenu";
 import MobileMenu from "./MobileMenu";
 import { mainNav, contact } from "@/data/site";
 
-type MenuName = "industries" | "coverage";
+type MenuName = "industries" | "coverage" | "support";
 
 const PANEL_IDS: Record<MenuName, string> = {
   industries: "industries-mega-menu",
   coverage: "coverage-menu",
+  support: "support-menu",
 };
 const MOBILE_ID = "mobile-menu";
 
@@ -231,6 +233,13 @@ export default function Header() {
           <CoverageMenu
             id={PANEL_IDS.coverage}
             open={openMenu === "coverage"}
+            onNavigate={() => setOpenMenu(null)}
+          />
+        </div>
+        <div onMouseEnter={() => open("support")} className="hidden lg:block">
+          <SupportMenu
+            id={PANEL_IDS.support}
+            open={openMenu === "support"}
             onNavigate={() => setOpenMenu(null)}
           />
         </div>

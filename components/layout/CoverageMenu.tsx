@@ -25,14 +25,15 @@ export default function CoverageMenu({
       role="region"
       aria-label="Coverage"
       aria-hidden={!open}
-      className={[
-        "absolute left-0 right-0 top-full bg-ink text-sand shadow-2xl",
-        "border-t border-sand/10",
-        "transition-all duration-300 ease-out origin-top",
-        open
-          ? "visible opacity-100 translate-y-0"
-          : "invisible opacity-0 -translate-y-2 pointer-events-none",
-      ].join(" ")}
+      // Inline open/close (Tailwind v4 doesn't reliably apply opacity-100 /
+      // translate-y-0 here — it leaves the panel stuck invisible).
+      style={{
+        opacity: open ? 1 : 0,
+        visibility: open ? "visible" : "hidden",
+        pointerEvents: open ? "auto" : "none",
+        transition: "opacity 250ms ease, visibility 250ms",
+      }}
+      className="absolute left-0 right-0 top-full origin-top border-t border-sand/10 bg-ink text-sand shadow-2xl"
     >
       <div className="container-page py-10">
         <div className="mb-7 flex items-end justify-between gap-6">
