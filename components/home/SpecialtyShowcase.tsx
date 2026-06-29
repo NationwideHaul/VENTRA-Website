@@ -2,7 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { frontIndustries } from "@/data/industries";
+import { getIndustry } from "@/data/industries";
+
+// Illustrations live in /public/branding/illustrations/<slug>.png. `?v=`
+// cache-busts re-exports over the same name.
+const ART_VERSION = "3";
 
 /**
  * "Specialist depth" showcase — a scroll-triggered sticky (scrollytelling)
@@ -20,24 +24,38 @@ type ShowcaseItem = {
   coverages: string[];
   href: string;
   panelEyebrow: string;
+  /** Illustration slug in /public/branding/illustrations, or null. */
+  art: string | null;
 };
 
-// A representative slice of the primary-focus industries keeps this pinned
-// scroll section tasteful; the full set lives on /industries.
+// The four featured industries + a "More industries" catch-all. Each industry
+// shows ALL of its coverage (core + specialty); illustrations come from the
+// shared set in /public/branding/illustrations.
+const FEATURED_SLUGS = [
+  "contractors",
+  "self-storage",
+  "real-estate",
+  "hospitality",
+];
+
 const ITEMS: ShowcaseItem[] = [
-  ...frontIndustries.slice(0, 4).map((s) => ({
-    key: s.slug,
-    label: s.name,
-    title: s.name,
-    desc: s.valueProp,
-    coverages: s.core.map((c) => c.name),
-    href: s.href,
-    panelEyebrow: "Core coverage",
-  })),
+  ...FEATURED_SLUGS.map((slug) => {
+    const s = getIndustry(slug)!;
+    return {
+      key: s.slug,
+      label: s.name,
+      title: s.name,
+      desc: s.valueProp,
+      coverages: [...s.core, ...s.specialty].map((c) => c.name),
+      href: s.href,
+      panelEyebrow: "Coverage",
+      art: s.slug,
+    };
+  }),
   {
-    key: "core",
-    label: "Core coverages",
-    title: "Protection for every part of your operation.",
+    key: "more-industries",
+    label: "More industries",
+    title: "Specialized depth across every industry.",
     desc: "The foundational commercial coverages every established business is built on.",
     coverages: [
       "General Liability",
@@ -45,8 +63,9 @@ const ITEMS: ShowcaseItem[] = [
       "Workers' Compensation",
       "Umbrella / Excess Liability",
     ],
-    href: "/solutions",
+    href: "/industries",
     panelEyebrow: "Core coverage",
+    art: "more-industries",
   },
 ];
 
@@ -82,19 +101,46 @@ function CheckIcon() {
   );
 }
 
-function Panel({ item, animate }: { item: ShowcaseItem; animate?: boolean }) {
+function Panel({
+  item,
+  animate,
+  fill,
+}: {
+  item: ShowcaseItem;
+  animate?: boolean;
+  /** Stretch to fill the column height (interactive layout) for a symmetric
+   *  panel; the Explore link is pinned to the bottom. */
+  fill?: boolean;
+}) {
   return (
-    <div className="rounded-3xl bg-gradient-to-br from-sand/70 via-white to-white p-[1.5px] shadow-2xl ring-1 ring-ink/5">
+    <div
+      className={`rounded-3xl bg-gradient-to-br from-sand/70 via-white to-white p-[1.5px] shadow-2xl ring-1 ring-ink/5 ${
+        fill ? "h-full" : ""
+      }`}
+    >
       <div
         key={animate ? item.key : undefined}
-        className={`rounded-[calc(1.5rem-1.5px)] bg-white p-7 sm:p-9 ${
+        className={`flex h-full flex-col rounded-[calc(1.5rem-1.5px)] bg-white p-7 sm:p-9 ${
           animate ? "panel-in" : ""
         }`}
       >
-        <p className="eyebrow text-rust">{item.panelEyebrow}</p>
-        <h3 className="mt-1 font-heading text-2xl text-ink sm:text-[1.75rem]">
-          {item.title}
-        </h3>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="eyebrow text-rust">{item.panelEyebrow}</p>
+            <h3 className="mt-1 font-heading text-2xl text-ink sm:text-[1.75rem]">
+              {item.title}
+            </h3>
+          </div>
+          {item.art && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={`/branding/illustrations/${item.art}.png?v=${ART_VERSION}`}
+              alt=""
+              aria-hidden
+              className="h-20 w-28 shrink-0 object-contain sm:h-24 sm:w-36"
+            />
+          )}
+        </div>
         <p className="mt-2 text-ink/60">{item.desc}</p>
 
         <ul className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -111,7 +157,9 @@ function Panel({ item, animate }: { item: ShowcaseItem; animate?: boolean }) {
 
         <Link
           href={item.href}
-          className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-rust hover:text-ink transition-colors"
+          className={`inline-flex items-center gap-2 text-sm font-medium text-rust hover:text-ink transition-colors ${
+            fill ? "mt-auto pt-7" : "mt-7"
+          }`}
         >
           Explore {item.label}
           <span aria-hidden>&rarr;</span>
@@ -125,7 +173,7 @@ function Heading() {
   return (
     <>
       <p className="eyebrow text-rust">What we focus on</p>
-      <h2 className="mt-3 text-3xl text-ink sm:text-4xl lg:text-5xl">
+      <h2 className="mt-3 font-heading text-3xl font-bold text-ink sm:text-4xl">
         Specialist depth where it matters most.
       </h2>
     </>
@@ -204,11 +252,11 @@ export default function SpecialtyShowcase() {
     <section
       ref={sectionRef}
       className="relative bg-white"
-      style={{ height: `${ITEMS.length * 85}vh` }}
+      style={{ height: `${ITEMS.length * 72}vh` }}
       aria-label="Specialist depth where it matters most"
     >
       <div className="sticky top-0 flex min-h-screen items-center py-[var(--header-h)]">
-        <div className="container-page grid w-full items-center gap-12 lg:grid-cols-2">
+        <div className="container-page grid w-full items-stretch gap-12 lg:grid-cols-2">
           {/* Left: heading + stepped list */}
           <div>
             <Heading />
@@ -245,9 +293,10 @@ export default function SpecialtyShowcase() {
             </ul>
           </div>
 
-          {/* Right: sticky panel that swaps with the active item */}
-          <div>
-            <Panel item={ITEMS[active]} animate />
+          {/* Right: panel that swaps with the active item; stretches to match
+              the left column so both sides are symmetric top-to-bottom */}
+          <div className="h-full">
+            <Panel item={ITEMS[active]} animate fill />
           </div>
         </div>
       </div>

@@ -15,6 +15,13 @@
 /* Pacaembu — primary / headings */
 @font-face {
   font-family: "Pacaembu";
+  src: url("/fonts/pacaembu-light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Pacaembu";
   src: url("/fonts/pacaembu-regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
@@ -28,8 +35,10 @@
   font-display: swap;
 }
 @font-face {
+  /* Pacaembu has no true SemiBold; map the 600 slot to Medium so heading
+     weight stays refined rather than synthesizing a faux-bold. */
   font-family: "Pacaembu";
-  src: url("/fonts/pacaembu-semibold.woff2") format("woff2");
+  src: url("/fonts/pacaembu-medium.woff2") format("woff2");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -72,8 +81,11 @@
   --font-heading: "Pacaembu", system-ui, "Segoe UI", Roboto, "Helvetica Neue",
     Arial, sans-serif;
   --font-accent: "Ellery", Georgia, "Times New Roman", Cambria, serif;
-  --font-sans: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    sans-serif;
+  /* Body text is also Pacaembu — per the brand guide it is the PRIMARY family
+     for headings and body alike. Falls back to the same grotesk stack until
+     the licensed .woff2 files are added to /public/fonts. */
+  --font-sans: "Pacaembu", system-ui, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
 
   /* Layout — vertical rhythm for content sections. Kept tighter than a hero's
      own padding so two stacked sections don't double into a cavernous gap. */

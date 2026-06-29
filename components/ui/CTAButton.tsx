@@ -9,7 +9,7 @@ import {
 } from "@/components/contact/contact-modal";
 
 type Variant = "primary" | "outline" | "ghost";
-type Size = "sm" | "md" | "lg";
+type Size = "sm" | "md" | "lg" | "xl";
 
 type CTAButtonProps = {
   /** Link target used as the no-JS fallback (defaults to /contact). */
@@ -39,6 +39,7 @@ const sizes: Record<Size, string> = {
   sm: "h-9 px-4 text-sm",
   md: "h-11 px-6 text-[0.95rem]",
   lg: "h-13 px-8 text-base",
+  xl: "h-14 px-10 text-lg",
 };
 
 /**

@@ -21,8 +21,13 @@ const MOBILE_ID = "mobile-menu";
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState<MenuName | null>(null);
+  // When a menu is opened by click it is "pinned" — it stays open like a page
+  // and ignores mouse-leave; only a click elsewhere, the toggle, Escape, or a
+  // route change closes it.
+  const [pinned, setPinned] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
   const pathname = usePathname();
 
   // Solid bar after a little scroll.
@@ -36,6 +41,7 @@ export default function Header() {
   // Close everything on route change.
   useEffect(() => {
     setOpenMenu(null);
+    setPinned(false);
     setMobileOpen(false);
   }, [pathname]);
 
@@ -44,12 +50,26 @@ export default function Header() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setOpenMenu(null);
+        setPinned(false);
         setMobileOpen(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  // A click outside the header closes a pinned menu.
+  useEffect(() => {
+    if (!pinned) return;
+    const onDown = (e: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        setOpenMenu(null);
+        setPinned(false);
+      }
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [pinned]);
 
   // Lock background scroll while the mobile menu is open.
   useEffect(() => {
@@ -63,16 +83,32 @@ export default function Header() {
   // panel doesn't dismiss it).
   const open = (name: MenuName) => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
+    // Hovering a different menu than the pinned one reverts to hover behavior.
+    if (openMenu !== name) setPinned(false);
     setOpenMenu(name);
   };
   const scheduleClose = () => {
+    // A pinned (click-opened) menu stays open until dismissed explicitly.
+    if (pinned) return;
     if (closeTimer.current) clearTimeout(closeTimer.current);
     closeTimer.current = setTimeout(() => setOpenMenu(null), 120);
+  };
+  // Click toggles the menu and pins it open like a page.
+  const togglePinned = (name: MenuName) => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    if (openMenu === name && pinned) {
+      setOpenMenu(null);
+      setPinned(false);
+    } else {
+      setOpenMenu(name);
+      setPinned(true);
+    }
   };
 
   return (
     <>
       <header
+        ref={headerRef}
         className={[
           "fixed inset-x-0 top-0 z-50 h-[var(--header-h)]",
           "bg-ink/95 backdrop-blur-md transition-colors duration-300",
@@ -99,9 +135,7 @@ export default function Header() {
                     aria-controls={PANEL_IDS[item.menu]}
                     onMouseEnter={() => open(item.menu!)}
                     onFocus={() => open(item.menu!)}
-                    onClick={() =>
-                      setOpenMenu((cur) => (cur === item.menu ? null : item.menu!))
-                    }
+                    onClick={() => togglePinned(item.menu!)}
                     className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-[0.95rem] font-medium text-sand/80 hover:bg-white/10 hover:text-white transition-colors"
                   >
                     {item.label}

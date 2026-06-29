@@ -11,19 +11,19 @@ import CarrierMarquee from "@/components/home/CarrierMarquee";
 const FEATURES = [
   {
     title: "We understand your business first",
-    desc: "Before we recommend any coverage, we learn how your business actually operates — so you get a program built around you, not a template pulled off a shelf.",
+    desc: "A program built around how you operate — not a template.",
   },
   {
     title: "We find the gaps others miss",
-    desc: "Most agents sell you what you ask for. We surface the exposures a once-a-year agent overlooks — so there are fewer surprises when a claim is finally tested.",
+    desc: "We catch the exposures others miss, before a claim does.",
   },
   {
     title: "Specialized depth in your industry",
-    desc: "We know construction, storage, habitational, real estate, hospitality, healthcare, and logistics at a level a generalist can't — an advisor who speaks your language on day one.",
+    desc: "An advisor who speaks your industry from day one.",
   },
   {
     title: "A relationship, not a transaction",
-    desc: "We stay engaged as your business changes, adjusting coverage as you grow — instead of an agent you see once a year and coverage that goes stale.",
+    desc: "We adjust coverage as you grow, so it never goes stale.",
   },
 ];
 
@@ -61,15 +61,17 @@ export default function HomePage() {
 
           <div className="relative container-page pt-[clamp(5rem,12vh,9rem)] pb-[clamp(13rem,26vh,19rem)] text-center">
             <Reveal>
-              <h1 className="mx-auto max-w-[15ch] text-balance text-5xl text-white sm:text-6xl lg:text-7xl">
-                Insurance for businesses that have{" "}
-                <span className="font-accent font-normal italic">
+              <h1 className="mx-auto max-w-[20ch] font-medium leading-[1.05] text-[2.85rem] text-white sm:text-[3.55rem] lg:text-[4.3rem]">
+                Insurance for
+                <br />
+                businesses that have
+                <span className="mt-1 block font-accent text-[1.05em] font-semibold italic">
                   too much to lose.
                 </span>
               </h1>
             </Reveal>
             <Reveal delay={100}>
-              <p className="mx-auto mt-7 max-w-full text-lg leading-relaxed text-white/85 sm:whitespace-nowrap sm:text-xl">
+              <p className="mx-auto mt-7 max-w-full text-[1.0625rem] font-light leading-relaxed text-white/85 sm:whitespace-nowrap sm:text-[1.1875rem]">
                 Commercial insurance tailored to your business, with a dedicated
                 advisor who fights for your interests.
               </p>
@@ -93,10 +95,10 @@ export default function HomePage() {
           <div className="mx-auto max-w-6xl text-center">
             <Reveal>
               <p className="eyebrow text-rust">Carrier partners</p>
-              <h2 className="mt-2 font-heading text-2xl text-ink sm:text-3xl">
+              <h2 className="mt-2 font-heading text-3xl font-bold text-ink sm:text-4xl">
                 Backed by the nation&rsquo;s leading carriers.
               </h2>
-              <p className="mx-auto mt-3 max-w-xl text-ink/60">
+              <p className="mx-auto mt-3 text-ink/60 sm:whitespace-nowrap">
                 Licensed in 48 states, with access to hundreds of competitive
                 programs.
               </p>
@@ -144,13 +146,10 @@ export default function HomePage() {
 
           {/* Right: eyebrow, heading, and the four selling points */}
           <div>
-            <p className="font-heading text-sm font-semibold uppercase tracking-[0.18em] text-ink">
-              Why Ventra
-            </p>
-            <div className="mt-3 h-0.5 w-16 bg-rust" />
+            <p className="eyebrow text-rust">Why Ventra</p>
 
-            <h2 className="mt-6 font-accent text-4xl leading-[1.1] text-ink sm:text-5xl">
-              Protection is where we start, not where we stop.
+            <h2 className="mt-2 font-heading text-3xl font-bold text-ink sm:text-4xl">
+              Built to keep up with what you&rsquo;re building.
             </h2>
 
             <div className="mt-10 grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2">

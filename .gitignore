@@ -37,3 +37,7 @@ yarn-error.log*
 /Logos/
 /branding/
 /hero picture.png
+# Trial font source package — only the .woff2 in /public/fonts are deployed
+/Pacaembu-TrialNaipeFoundry/
+# Stray source drop — the deployed copy lives in /public/branding/advisors
+/Andrew Sloan.jpg

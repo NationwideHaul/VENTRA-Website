@@ -15,6 +15,19 @@ import { industries, getIndustry } from "@/data/industries";
  * once-a-year transactional agency overlooks.
  */
 
+// Slugs with a real illustration in /public/branding/illustrations (the 7
+// primary-focus industries). `?v=` cache-busts re-exports over the same name.
+const ILLUSTRATED = new Set([
+  "contractors",
+  "self-storage",
+  "habitation-multifamily",
+  "real-estate",
+  "hospitality",
+  "healthcare",
+  "warehousing-logistics",
+]);
+const ART_VERSION = "3";
+
 export function generateStaticParams() {
   return industries.map((i) => ({ specialty: i.slug }));
 }
@@ -43,32 +56,57 @@ export default async function IndustryPage({
   if (!industry) notFound();
 
   const isFront = industry.tier === "front";
+  const hasArt = ILLUSTRATED.has(industry.slug);
 
   return (
     <>
-      {/* Hero — leads with the exposure profile */}
+      {/* Hero — leads with the exposure profile; featured industries also show
+          their illustration in a light panel beside the copy. */}
       <section className="bg-ink text-sand">
         <div className="container-page py-[clamp(4rem,9vw,8rem)]">
-          <Reveal>
-            <p className="eyebrow text-rust mb-4">
-              {isFront ? "Primary focus" : "Industry"}
-            </p>
-          </Reveal>
-          <Reveal delay={80}>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl text-white max-w-4xl">
-              {industry.name}
-            </h1>
-          </Reveal>
-          <Reveal delay={160}>
-            <p className="mt-6 text-lg text-sand/75 max-w-4xl leading-relaxed">
-              {industry.exposureProfile}
-            </p>
-          </Reveal>
-          <Reveal delay={240}>
-            <div className="mt-9">
-              <CTAButton size="lg" />
+          <div
+            className={
+              hasArt
+                ? "grid items-center gap-10 lg:grid-cols-12 lg:gap-14"
+                : ""
+            }
+          >
+            <div className={hasArt ? "lg:col-span-7" : ""}>
+              <Reveal>
+                <p className="eyebrow text-rust mb-4">
+                  {isFront ? "Primary focus" : "Industry"}
+                </p>
+              </Reveal>
+              <Reveal delay={80}>
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl text-white max-w-4xl">
+                  {industry.name}
+                </h1>
+              </Reveal>
+              <Reveal delay={160}>
+                <p className="mt-6 text-lg text-sand/75 max-w-4xl leading-relaxed">
+                  {industry.exposureProfile}
+                </p>
+              </Reveal>
+              <Reveal delay={240}>
+                <div className="mt-9">
+                  <CTAButton size="lg" />
+                </div>
+              </Reveal>
             </div>
-          </Reveal>
+
+            {hasArt && (
+              <Reveal delay={120} className="lg:col-span-5">
+                <div className="rounded-3xl bg-white p-8 shadow-2xl ring-1 ring-white/10 sm:p-10">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/branding/illustrations/${industry.slug}.png?v=${ART_VERSION}`}
+                    alt={`${industry.name} illustration`}
+                    className="mx-auto aspect-[3/2] w-full object-contain"
+                  />
+                </div>
+              </Reveal>
+            )}
+          </div>
         </div>
       </section>
 

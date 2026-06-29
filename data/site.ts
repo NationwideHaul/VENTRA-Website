@@ -47,7 +47,15 @@ export const contact = {
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "advisors@ventrainsurance.com",
   // [CONFIRM] business address
   address:
-    process.env.NEXT_PUBLIC_CONTACT_ADDRESS ?? "Address coming soon",
+    process.env.NEXT_PUBLIC_CONTACT_ADDRESS ??
+    "101 Plaza Real S, Suite 224, Boca Raton, FL 33432, United States",
+} as const;
+
+/** Social profiles — [CONFIRM] official Ventra LinkedIn URL. */
+export const social = {
+  linkedin:
+    process.env.NEXT_PUBLIC_LINKEDIN_URL ??
+    "https://www.linkedin.com/company/ventra-insurance-group",
 } as const;
 
 /** Footer legal + licensing — [CONFIRM] exact wording with manager. */
@@ -59,15 +67,22 @@ export const legal = {
     "Ventra Insurance Group is a licensed insurance agency. Licensing details coming soon.",
 } as const;
 
-/** Grouped footer quick links. */
+/** Grouped footer quick links — two columns. */
 export const footerLinks: { heading: string; items: NavItem[] }[] = [
+  {
+    heading: "Explore",
+    items: [
+      { label: "Coverage", href: "/solutions" },
+      { label: "Industries", href: "/industries" },
+      { label: "Get Insured", href: "/contact" },
+    ],
+  },
   {
     heading: "Company",
     items: [
-      { label: "About", href: "/about" },
-      { label: "Solutions", href: "/solutions" },
-      { label: "Industries", href: "/industries" },
-      { label: "Start a Conversation", href: "/contact" },
+      { label: "About Us", href: "/about" },
+      { label: "Contact Us", href: "/contact" },
+      { label: "FAQ", href: "/faq" },
     ],
   },
 ];
