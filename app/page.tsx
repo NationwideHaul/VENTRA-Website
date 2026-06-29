@@ -197,8 +197,7 @@ export default function HomePage() {
               From first hello to fully covered.
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-sand/70">
-              No pressure and no jargon — just a clear path to coverage that
-              fits.
+              This is the clear path to coverage that fits.
             </p>
           </div>
 
@@ -254,19 +253,25 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Final CTA band */}
-      <section className="bg-rust text-white">
-        <div className="container-page py-[clamp(4rem,8vw,7rem)] text-center">
-          <Reveal>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl max-w-3xl mx-auto">
-              Protection at the scale of your ambition.
-            </h2>
-          </Reveal>
-          <Reveal delay={120}>
-            <div className="mt-8">
-              <CTAButton variant="outline" size="lg" className="border-white/50 text-white hover:bg-white hover:text-rust" />
-            </div>
-          </Reveal>
+      {/* Final CTA — white section with the message inside a rust box */}
+      <section className="bg-white">
+        <div className="container-page py-[var(--spacing-section)]">
+          <div className="rounded-[2rem] bg-rust px-6 py-[clamp(3rem,7vw,5.5rem)] text-center text-white">
+            <Reveal>
+              <h2 className="mx-auto max-w-3xl text-3xl sm:text-4xl lg:text-5xl">
+                Protection at the scale of your ambition.
+              </h2>
+            </Reveal>
+            <Reveal delay={120}>
+              <div className="mt-8">
+                <CTAButton
+                  variant="outline"
+                  size="lg"
+                  className="border-white/50 text-white hover:bg-white hover:text-rust"
+                />
+              </div>
+            </Reveal>
+          </div>
         </div>
       </section>
     </>

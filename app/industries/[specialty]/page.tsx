@@ -60,9 +60,9 @@ export default async function IndustryPage({
 
   return (
     <>
-      {/* Hero — leads with the exposure profile; featured industries also show
-          their illustration in a light panel beside the copy. */}
-      <section className="bg-ink text-sand">
+      {/* Hero — white; leads with the exposure profile. Featured industries
+          show their illustration (white canvas blends on the white hero). */}
+      <section className="bg-white">
         <div className="container-page py-[clamp(4rem,9vw,8rem)]">
           <div
             className={
@@ -78,12 +78,12 @@ export default async function IndustryPage({
                 </p>
               </Reveal>
               <Reveal delay={80}>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl text-white max-w-4xl">
+                <h1 className="max-w-4xl text-4xl font-bold text-ink sm:text-5xl lg:text-6xl">
                   {industry.name}
                 </h1>
               </Reveal>
               <Reveal delay={160}>
-                <p className="mt-6 text-lg text-sand/75 max-w-4xl leading-relaxed">
+                <p className="mt-6 max-w-4xl text-lg leading-relaxed text-ink/70">
                   {industry.exposureProfile}
                 </p>
               </Reveal>
@@ -96,14 +96,12 @@ export default async function IndustryPage({
 
             {hasArt && (
               <Reveal delay={120} className="lg:col-span-5">
-                <div className="rounded-3xl bg-white p-8 shadow-2xl ring-1 ring-white/10 sm:p-10">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`/branding/illustrations/${industry.slug}.png?v=${ART_VERSION}`}
-                    alt={`${industry.name} illustration`}
-                    className="mx-auto aspect-[3/2] w-full object-contain"
-                  />
-                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/branding/illustrations/${industry.slug}.png?v=${ART_VERSION}`}
+                  alt={`${industry.name} illustration`}
+                  className="mx-auto aspect-[3/2] w-full max-w-md object-contain lg:ml-auto"
+                />
               </Reveal>
             )}
           </div>

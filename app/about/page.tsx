@@ -47,7 +47,7 @@ const STATS = [
 ];
 
 /* ---------------------------------------------------------------------------
-   Section 5 — carrier partners. Shown as a clean name grid (logos pending);
+   Section 5 — carrier partners. Shown as a clean name list (logos pending);
    the per-carrier specialties are kept internal and are NOT published here.
    [CONFIRM] Berkshire Hathaway entity (GUARD vs BHHC); confirm appointments.
 --------------------------------------------------------------------------- */
@@ -84,79 +84,107 @@ const LEAD_ADVISOR = {
   photo: "/branding/advisors/andrew-sloan.jpg",
 };
 
+function CarrierColumn({ label, names }: { label: string; names: string[] }) {
+  return (
+    <div>
+      <p className="font-heading text-xs font-medium uppercase tracking-[0.18em] text-rust">
+        {label}
+      </p>
+      <ul className="mt-5 grid grid-cols-2 gap-x-8 sm:grid-cols-3">
+        {names.map((name) => (
+          <li
+            key={name}
+            className="border-b border-ink/10 py-3 font-heading text-ink/85"
+          >
+            {name}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export default function AboutPage() {
   return (
     <>
-      {/* Section 1 — Origin / Why Ventra exists */}
+      {/* Section 1 — Origin / editorial hero */}
       <section className="bg-ink text-sand">
-        <div className="container-page py-[clamp(4rem,9vw,8rem)]">
+        <div className="container-page py-[clamp(5rem,12vw,9rem)]">
           <Reveal>
-            <p className="eyebrow text-rust mb-4">Our story</p>
+            <p className="eyebrow text-rust mb-5">Our story</p>
           </Reveal>
           <Reveal delay={80}>
-            <h1 className="max-w-4xl text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
+            <h1 className="max-w-[18ch] text-[clamp(2.5rem,6vw,4.5rem)] font-bold leading-[1.05] text-white">
               We learned how coverage behaves when it&rsquo;s tested.
             </h1>
           </Reveal>
           <Reveal delay={160}>
-            <div className="mt-8 grid max-w-4xl gap-x-12 gap-y-5 text-lg leading-relaxed text-sand/75 sm:grid-cols-2">
-              <p>
-                Ventra was founded by people who spent years in one of the
-                toughest corners of commercial insurance — protecting businesses
-                most carriers would rather avoid. That work taught us how a
-                policy actually performs when something goes wrong.
+            <div className="mt-12 grid gap-x-16 gap-y-6 border-t border-sand/15 pt-10 lg:grid-cols-2">
+              <p className="text-xl font-medium leading-snug text-white">
+                We built Ventra to close the gap between established businesses
+                and the protection they actually need.
               </p>
-              <p>
-                We kept seeing the same pattern: established mid-market
-                businesses — the ones with real assets and real exposure — were
-                handed off-the-shelf policies by agents who never took the time
-                to understand them. So we built Ventra to close that gap.
-              </p>
+              <div className="space-y-5 leading-relaxed text-sand/70">
+                <p>
+                  Ventra was founded by people who spent years in one of the
+                  toughest corners of commercial insurance — protecting
+                  businesses most carriers would rather avoid. That work taught
+                  us how a policy actually performs when something goes wrong.
+                </p>
+                <p>
+                  We kept seeing the same pattern: established mid-market
+                  businesses — the ones with real assets and real exposure —
+                  were handed off-the-shelf policies by agents who never took
+                  the time to understand them. So we built something better.
+                </p>
+              </div>
             </div>
           </Reveal>
         </div>
       </section>
 
-      {/* Section 2 — What makes us different */}
+      {/* Section 2 — What makes us different (editorial numbered pillars) */}
       <Section className="bg-white">
         <p className="eyebrow text-rust">What makes us different</p>
         <h2 className="mt-2 max-w-2xl text-3xl font-bold text-ink sm:text-4xl">
           The difference is in how we work.
         </h2>
-        <div className="mt-12 grid gap-px overflow-hidden rounded-3xl bg-ink/10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-14 grid gap-x-14 gap-y-12 sm:grid-cols-2">
           {PILLARS.map((p, i) => (
             <Reveal key={p.n} delay={i * 70}>
-              <div className="flex h-full flex-col bg-white p-7">
-                <span className="font-heading text-2xl font-bold text-rust">
+              <div className="flex gap-6 border-t border-ink/10 pt-8">
+                <span className="font-heading text-4xl font-bold leading-none text-rust/30">
                   {p.n}
                 </span>
-                <h3 className="mt-4 font-heading text-lg text-ink">
-                  {p.title}
-                </h3>
-                <p className="mt-2 text-ink/65">{p.desc}</p>
+                <div>
+                  <h3 className="font-heading text-xl text-ink">{p.title}</h3>
+                  <p className="mt-2 leading-relaxed text-ink/65">{p.desc}</p>
+                </div>
               </div>
             </Reveal>
           ))}
         </div>
       </Section>
 
-      {/* Section 3 — Credibility stats */}
-      <section className="bg-ink text-sand">
-        <div className="container-page py-[clamp(3rem,6vw,5rem)]">
-          <div className="grid gap-10 text-center sm:grid-cols-3">
+      {/* Section 3 — Credibility stats (beige band, divided) */}
+      <section className="bg-sand/40">
+        <div className="container-page py-[clamp(3.5rem,7vw,5.5rem)]">
+          <div className="grid gap-10 sm:grid-cols-3 sm:divide-x sm:divide-ink/10">
             {STATS.map((s, i) => (
               <Reveal key={s.label} delay={i * 80}>
-                <p className="font-heading text-5xl font-bold text-white sm:text-6xl">
-                  {s.value}
-                </p>
-                <p className="mt-3 text-sand/70">{s.label}</p>
+                <div className="text-center sm:px-6">
+                  <p className="font-heading text-5xl font-bold leading-none text-ink sm:text-6xl">
+                    {s.value}
+                  </p>
+                  <p className="mt-4 text-ink/60">{s.label}</p>
+                </div>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Section 4 — Meet the advisors ([CONFIRM] — more advisors pending sign-off) */}
+      {/* Section 4 — Meet the advisors ([CONFIRM] — more advisors pending) */}
       <Section className="bg-white">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
@@ -164,7 +192,7 @@ export default function AboutPage() {
             <h2 className="mt-2 text-3xl font-bold text-ink sm:text-4xl">
               Advisors who already know your industry.
             </h2>
-            <p className="mt-4 max-w-md text-ink/65 leading-relaxed">
+            <p className="mt-4 max-w-md leading-relaxed text-ink/65">
               You work with a dedicated advisor who understands how your
               business operates — not a call center. Someone who stays with you
               as your business grows.
@@ -177,7 +205,6 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* Photo on the right, with a rust-tinted offset panel behind */}
           <div className="relative mx-auto w-full max-w-sm lg:mx-0 lg:ml-auto">
             <div
               aria-hidden
@@ -195,67 +222,54 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      {/* Section 5 — Carrier partners */}
-      <Section className="bg-sand/40">
-        <p className="eyebrow text-rust">Our carrier partners</p>
-        <h2 className="mt-2 max-w-2xl text-3xl font-bold text-ink sm:text-4xl">
-          Access to hundreds of programs through top-rated carriers.
-        </h2>
-
-        <div className="mt-10 space-y-10">
-          <div>
-            <p className="font-heading text-sm font-medium uppercase tracking-[0.16em] text-ink/50">
-              Standard markets
+      {/* Section 5 — Carrier partners (clean editorial lists) */}
+      <Section
+        id="carriers"
+        className="bg-white scroll-mt-[calc(var(--header-h)+1.5rem)] border-t border-ink/10"
+      >
+        <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="lg:col-span-4">
+            <p className="eyebrow text-rust">Our carrier partners</p>
+            <h2 className="mt-2 text-3xl font-bold text-ink sm:text-4xl">
+              Access to hundreds of programs through top-rated carriers.
+            </h2>
+            <p className="mt-4 max-w-sm leading-relaxed text-ink/65">
+              We place coverage across both standard and E&amp;S markets — so
+              your program is built around your business, not a single
+              insurer&rsquo;s appetite.
             </p>
-            <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {STANDARD_CARRIERS.map((c) => (
-                <li
-                  key={c}
-                  className="rounded-xl border border-ink/10 bg-white px-5 py-4 text-center font-heading text-ink/90 shadow-sm"
-                >
-                  {c}
-                </li>
-              ))}
-            </ul>
           </div>
-
-          <div>
-            <p className="font-heading text-sm font-medium uppercase tracking-[0.16em] text-ink/50">
-              E&amp;S / Specialty markets
-            </p>
-            <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {SPECIALTY_CARRIERS.map((c) => (
-                <li
-                  key={c}
-                  className="rounded-xl border border-ink/10 bg-white px-5 py-4 text-center font-heading text-ink/90 shadow-sm"
-                >
-                  {c}
-                </li>
-              ))}
-            </ul>
+          <div className="space-y-12 lg:col-span-8">
+            <CarrierColumn label="Standard markets" names={STANDARD_CARRIERS} />
+            <CarrierColumn
+              label="E&S / Specialty markets"
+              names={SPECIALTY_CARRIERS}
+            />
           </div>
         </div>
       </Section>
 
       {/* Section 6 — Closing CTA */}
-      <section className="bg-rust text-white">
-        <div className="container-page py-[clamp(4rem,8vw,7rem)] text-center">
-          <Reveal>
-            <h2 className="mx-auto max-w-3xl text-3xl font-bold sm:text-4xl lg:text-5xl">
-              Ready to work with an advisor who actually knows your industry?
-            </h2>
-          </Reveal>
-          <Reveal delay={120}>
-            <div className="mt-8">
-              <CTAButton
-                variant="outline"
-                size="lg"
-                className="border-white/50 text-white hover:bg-white hover:text-rust"
-              >
-                Talk to an Advisor
-              </CTAButton>
-            </div>
-          </Reveal>
+      <section className="bg-white">
+        <div className="container-page pb-[var(--spacing-section)]">
+          <div className="rounded-[2rem] bg-rust px-6 py-[clamp(3.5rem,8vw,6rem)] text-center text-white">
+            <Reveal>
+              <h2 className="mx-auto max-w-3xl text-3xl font-bold sm:text-4xl lg:text-5xl">
+                Ready to work with an advisor who actually knows your industry?
+              </h2>
+            </Reveal>
+            <Reveal delay={120}>
+              <div className="mt-8">
+                <CTAButton
+                  variant="outline"
+                  size="lg"
+                  className="border-white/50 text-white hover:bg-white hover:text-rust"
+                >
+                  Talk to an Advisor
+                </CTAButton>
+              </div>
+            </Reveal>
+          </div>
         </div>
       </section>
     </>

@@ -212,7 +212,7 @@
 @keyframes panel-in {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -220,7 +220,7 @@
   }
 }
 .panel-in {
-  animation: panel-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: panel-in 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ---------- Carrier logo marquee (infinite horizontal scroll) ---------- */

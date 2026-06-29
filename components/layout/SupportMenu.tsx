@@ -54,11 +54,13 @@ export default function SupportMenu({ open, onNavigate, id }: SupportMenuProps) 
         pointerEvents: open ? "auto" : "none",
         transition: "opacity 250ms ease, visibility 250ms",
       }}
-      className="absolute left-0 right-0 top-full origin-top border-t border-sand/10 bg-ink text-sand shadow-2xl"
+      className="absolute left-0 right-0 top-full origin-top border-t border-ink/10 bg-white text-ink shadow-2xl"
     >
-      <div className="container-page py-10">
+      {/* Opaque base (white) + light-beige tint to match the brand sections */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-sand/40" />
+      <div className="relative container-page py-10">
         <p className="eyebrow text-rust text-sm">Support</p>
-        <h3 className="mt-1 max-w-md font-heading text-2xl text-white">
+        <h3 className="mt-1 max-w-md font-heading text-2xl text-ink">
           We&rsquo;re here when you need us.
         </h3>
 
@@ -68,7 +70,7 @@ export default function SupportMenu({ open, onNavigate, id }: SupportMenuProps) 
               key={item.href}
               href={item.href}
               onClick={onNavigate}
-              className="group flex items-start gap-4 rounded-2xl border border-sand/10 bg-sand/[0.03] p-5 transition-colors hover:border-rust/50 hover:bg-sand/[0.06]"
+              className="group flex items-start gap-4 rounded-2xl border border-ink/10 bg-white p-5 transition-colors hover:border-rust/50 hover:shadow-md"
             >
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rust/15 text-rust">
                 <svg
@@ -85,7 +87,7 @@ export default function SupportMenu({ open, onNavigate, id }: SupportMenuProps) 
                 </svg>
               </span>
               <span>
-                <span className="flex items-center gap-1.5 font-heading text-white">
+                <span className="flex items-center gap-1.5 font-heading text-ink">
                   {item.title}
                   <span
                     aria-hidden
@@ -94,7 +96,7 @@ export default function SupportMenu({ open, onNavigate, id }: SupportMenuProps) 
                     &rarr;
                   </span>
                 </span>
-                <span className="mt-1 block text-sm text-sand/70">
+                <span className="mt-1 block text-sm text-ink/65">
                   {item.desc}
                 </span>
               </span>

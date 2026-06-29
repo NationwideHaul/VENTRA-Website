@@ -75,6 +75,7 @@ export const footerLinks: { heading: string; items: NavItem[] }[] = [
     items: [
       { label: "Coverage", href: "/solutions" },
       { label: "Industries", href: "/industries" },
+      { label: "Carriers", href: "/about#carriers" },
       { label: "Get Insured", href: "/contact" },
     ],
   },

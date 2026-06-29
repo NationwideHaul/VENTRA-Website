@@ -73,10 +73,10 @@ function NumberTile({ n, active }: { n: number; active: boolean }) {
   return (
     <span
       className={[
-        "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-heading text-lg transition-all duration-300",
+        "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-heading text-lg transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
         active
           ? "bg-rust text-white shadow-md"
-          : "bg-sand text-ink/40 ring-1 ring-ink/5",
+          : "bg-sand text-ink/45 ring-1 ring-ink/5",
       ].join(" ")}
     >
       {n}
@@ -217,7 +217,7 @@ export default function SpecialtyShowcase() {
   // Static, fully-visible fallback (reduced motion / pre-hydration / no-JS).
   if (!interactive) {
     return (
-      <section className="bg-white py-[var(--spacing-section)]">
+      <section className="bg-sand/40 py-[var(--spacing-section)]">
         <div className="container-page">
           <Heading />
           <div className="mt-12 space-y-12">
@@ -251,7 +251,7 @@ export default function SpecialtyShowcase() {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-white"
+      className="relative bg-sand/40"
       style={{ height: `${ITEMS.length * 72}vh` }}
       aria-label="Specialist depth where it matters most"
     >
@@ -268,7 +268,7 @@ export default function SpecialtyShowcase() {
                     <div className="flex items-center gap-4 py-4">
                       <NumberTile n={i + 1} active={isActive} />
                       <span
-                        className={`font-heading text-xl transition-colors duration-300 ${
+                        className={`font-heading text-xl transition-colors duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                           isActive ? "text-ink" : "text-ink/35"
                         }`}
                       >
@@ -277,7 +277,7 @@ export default function SpecialtyShowcase() {
                     </div>
                     {/* Active item reveals its summary */}
                     <div
-                      className="grid transition-all duration-300 ease-out"
+                      className="grid transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
                       style={{
                         gridTemplateRows: isActive ? "1fr" : "0fr",
                         opacity: isActive ? 1 : 0,
