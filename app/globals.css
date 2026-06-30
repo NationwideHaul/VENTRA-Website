@@ -223,6 +223,39 @@
   animation: panel-in 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* ---------- Mount entrance: staggered fade/rise on load (not scroll-gated,
+   so above-the-fold content like the hero industry tiles is never stuck
+   hidden). Stagger via the --rise-delay custom property. ---------- */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise-in {
+  opacity: 0;
+  animation: rise-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+/* ---------- Slow float (subtle life on hero / decorative art) ---------- */
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.float-soft {
+  animation: float-soft 6s ease-in-out infinite;
+}
+
 /* ---------- Carrier logo marquee (infinite horizontal scroll) ---------- */
 @keyframes carrier-marquee {
   from {
@@ -247,8 +280,11 @@
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  [data-reveal] {
+  [data-reveal],
+  .rise-in,
+  .float-soft {
     opacity: 1 !important;
     transform: none !important;
+    animation: none !important;
   }
 }

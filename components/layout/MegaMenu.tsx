@@ -31,7 +31,7 @@ const ART_VERSION = "3";
 /**
  * Desktop two-panel Industries mega-menu.
  *
- * Left panel (rust): every industry — the 7 primary-focus, a divider, then the
+ * Left panel (ink): every industry — the 7 primary-focus, a divider, then the
  * "More industries" breadth list — all at the same size; hovering any one swaps
  * the right panel. The list scrolls if it overflows. Right panel (white): the
  * active industry's illustration (primary focus only), name, value prop, and
@@ -96,17 +96,17 @@ export default function MegaMenu({ open, onNavigate, id }: MegaMenuProps) {
       }}
       className="absolute left-0 right-0 origin-top border-t border-ink/10 bg-white text-ink shadow-2xl"
     >
-      {/* Full-bleed two-tone: the entire left section is rust (~30%), the right
+      {/* Full-bleed two-tone: the entire left section is ink (~30%), the right
           white. No container/gap so each color fills its column edge-to-edge.
           The grid fills the viewport height below the header so the panel runs
           all the way to the bottom. */}
       <div className="grid h-full" style={{ gridTemplateColumns: "30% 70%" }}>
-        {/* Left: the whole orange section — scrolls internally when tall.
+        {/* Left: the whole ink section — scrolls internally when tall.
             data-lenis-prevent so the inner list scrolls (Lenis otherwise
             hijacks the wheel for the page). */}
         <div
           data-lenis-prevent
-          className="overflow-y-auto bg-rust py-9 pl-[clamp(1.25rem,4vw,3rem)] pr-7"
+          className="overflow-y-auto bg-ink py-9 pl-[clamp(1.25rem,4vw,3rem)] pr-7"
         >
           <p className="eyebrow text-sm text-white/70 mb-3">Primary focus</p>
           <ul className="space-y-0.5">{frontIndustries.map(renderItem)}</ul>

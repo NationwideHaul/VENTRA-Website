@@ -54,7 +54,7 @@ export default function Footer() {
             <div className="mt-6 space-y-1.5 text-sm">
               <a
                 href={`mailto:${contact.email}`}
-                className="block text-sand/80 hover:text-white transition-colors"
+                className="block text-base text-sand/80 hover:text-white transition-colors"
               >
                 {contact.email}
               </a>

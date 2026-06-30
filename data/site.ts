@@ -45,7 +45,7 @@ export const contact = {
   // [CONFIRM] CallRail tracking number — placeholder (fictitious 555 number)
   phone: process.env.NEXT_PUBLIC_CONTACT_PHONE ?? "(305) 555-0142",
   // [CONFIRM] inbox / routing address
-  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "advisors@ventrainsurance.com",
+  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "info@ventrainsurance.com",
   // [CONFIRM] business address
   address:
     process.env.NEXT_PUBLIC_CONTACT_ADDRESS ??

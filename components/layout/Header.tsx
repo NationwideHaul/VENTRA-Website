@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "@/components/ui/Logo";
+import navLogo from "@/public/logos/ventra-logo-3.png";
 import CTAButton from "@/components/ui/CTAButton";
 import MegaMenu from "./MegaMenu";
 import CoverageMenu from "./CoverageMenu";
@@ -123,7 +124,7 @@ export default function Header() {
         <div className="container-page flex h-[var(--header-h)] items-center justify-between gap-6">
           {/* Left group: logo with the nav links pinned right beside it */}
           <div className="flex items-center gap-9">
-            <Logo variant="sand" height={58} priority />
+            <Logo src={navLogo} variant="sand" height={58} priority />
 
             {/* Desktop nav */}
             <nav className="hidden lg:flex items-center gap-1" aria-label="Primary">

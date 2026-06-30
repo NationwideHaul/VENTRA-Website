@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Reveal from "@/components/motion/Reveal";
 import { frontIndustries } from "@/data/industries";
 
 // The home grid shows the 7 primary-focus industries plus a "View more" tile.
@@ -76,7 +75,7 @@ function TileArt({ slug }: { slug: string }) {
       src={`/branding/illustrations/${slug}.${ILLUSTRATION_EXT}?v=${ART_VERSION}`}
       alt=""
       aria-hidden
-      className="h-24 w-36 object-contain"
+      className="h-24 w-36 object-contain transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-110"
     />
   );
 }
@@ -90,7 +89,7 @@ function MoreArt() {
       src={`/branding/illustrations/more-industries.${ILLUSTRATION_EXT}?v=${ART_VERSION}`}
       alt=""
       aria-hidden
-      className="h-24 w-36 object-contain"
+      className="h-24 w-36 object-contain transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-110"
     />
   );
 }
@@ -98,41 +97,43 @@ function MoreArt() {
 export default function HeroIndustrySelector() {
   return (
     <div className="w-full">
-      <Reveal delay={100}>
-        <p className="eyebrow text-rust text-center">Explore by industry</p>
-      </Reveal>
+      <p className="eyebrow text-rust text-center rise-in">Explore by industry</p>
 
       <div
         aria-label="Explore by industry"
         className="mx-auto grid max-w-6xl grid-cols-2 gap-x-4 gap-y-16 pt-12 pb-6 sm:grid-cols-4"
       >
         {homeIndustries.map((t, i) => (
-          <Reveal key={t.slug} delay={140 + i * 70}>
-            <Link
-              href={`/contact?industry=${t.slug}`}
-              className={`${TILE_BASE} ${TILE_IDLE}`}
-            >
-              <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2">
-                <TileArt slug={t.slug} />
-              </span>
-              <span className="font-heading text-sm font-medium leading-snug text-ink">
-                {t.name}
-              </span>
-            </Link>
-          </Reveal>
+          <Link
+            key={t.slug}
+            href={`/contact?industry=${t.slug}`}
+            className={`${TILE_BASE} ${TILE_IDLE} rise-in`}
+            style={{ ["--rise-delay" as string]: `${140 + i * 70}ms` }}
+          >
+            <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2">
+              <TileArt slug={t.slug} />
+            </span>
+            <span className="font-heading text-sm font-medium leading-snug text-ink">
+              {t.name}
+            </span>
+          </Link>
         ))}
 
         {/* More industries — links to the Industries page */}
-        <Reveal delay={140 + homeIndustries.length * 70}>
-          <Link href="/industries" className={`${TILE_BASE} ${TILE_IDLE}`}>
-            <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2">
-              <MoreArt />
-            </span>
-            <span className="font-heading text-sm font-bold leading-snug text-ink">
-              View more industries
-            </span>
-          </Link>
-        </Reveal>
+        <Link
+          href="/industries"
+          className={`${TILE_BASE} ${TILE_IDLE} rise-in`}
+          style={{
+            ["--rise-delay" as string]: `${140 + homeIndustries.length * 70}ms`,
+          }}
+        >
+          <span className="pointer-events-none absolute -top-11 left-1/2 -translate-x-1/2">
+            <MoreArt />
+          </span>
+          <span className="font-heading text-sm font-bold leading-snug text-ink">
+            View more industries
+          </span>
+        </Link>
       </div>
     </div>
   );

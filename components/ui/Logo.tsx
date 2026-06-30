@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import { site } from "@/data/site";
 
@@ -17,6 +17,8 @@ const SUBMARK = { dark: submarkDark, white: submarkWhite, sand: submarkSand };
 type LogoProps = {
   /** Color treatment. "dark" for light backgrounds, "white"/"sand" for dark. */
   variant?: Variant;
+  /** Override the source image (takes precedence over variant/submark). */
+  src?: StaticImageData;
   /** Use the shield submark instead of the full wordmark. */
   submark?: boolean;
   /** Rendered height in px (width scales to the logo's aspect ratio). */
@@ -34,13 +36,14 @@ type LogoProps = {
  */
 export default function Logo({
   variant = "dark",
+  src: srcOverride,
   submark = false,
   height = 36,
   link = true,
   priority = false,
   className = "",
 }: LogoProps) {
-  const src = submark ? SUBMARK[variant] : WORDMARK[variant];
+  const src = srcOverride ?? (submark ? SUBMARK[variant] : WORDMARK[variant]);
   const ratio = src.width / src.height;
   const width = Math.round(height * ratio);
 

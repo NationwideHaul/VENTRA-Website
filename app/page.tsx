@@ -82,18 +82,16 @@ export default function HomePage() {
           <div className="relative container-page pt-[clamp(5rem,12vh,9rem)] pb-[clamp(13rem,26vh,19rem)] text-center">
             <Reveal>
               <h1 className="mx-auto max-w-[20ch] font-medium leading-[1.05] text-[2.85rem] text-white sm:text-[3.55rem] lg:text-[4.3rem]">
-                Insurance for
-                <br />
-                businesses that have
+                Insurance for businesses
                 <span className="mt-1 block font-accent text-[1.05em] font-semibold italic">
-                  bigger plans.
+                  built to scale.
                 </span>
               </h1>
             </Reveal>
             <Reveal delay={100}>
-              <p className="mx-auto mt-7 max-w-full text-[1.0625rem] font-light leading-relaxed text-white/85 sm:whitespace-nowrap sm:text-[1.1875rem]">
-                Commercial insurance tailored to your business, with a dedicated
-                advisor who fights for your interests.
+              <p className="mx-auto mt-7 max-w-2xl text-[1.0625rem] font-light leading-relaxed text-white/85 sm:text-[1.1875rem]">
+                Commercial insurance tailored to growing companies, backed by
+                dedicated agents who understand what&rsquo;s at stake.
               </p>
             </Reveal>
           </div>
@@ -150,16 +148,16 @@ export default function HomePage() {
           <div className="relative mx-auto w-full max-w-md lg:mx-0">
             <div
               aria-hidden
-              className="absolute -left-5 -top-5 bottom-8 right-10 rounded-3xl bg-rust/15 sm:-left-7 sm:-top-7"
+              className="float-soft absolute -left-5 -top-5 bottom-8 right-10 rounded-3xl bg-rust/15 sm:-left-7 sm:-top-7"
             />
-            <div className="relative overflow-hidden rounded-3xl shadow-2xl ring-1 ring-ink/10">
+            <div className="group relative overflow-hidden rounded-3xl shadow-2xl ring-1 ring-ink/10">
               <Image
-                src="/hero.jpg"
-                alt="A Ventra advisor meeting with a business owner"
-                width={1200}
-                height={1500}
+                src="/why-ventra.png"
+                alt="A Ventra advisor shaking hands with a business owner"
+                width={1182}
+                height={1024}
                 unoptimized
-                className="aspect-[4/5] w-full object-cover"
+                className="aspect-[5/4] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               />
             </div>
           </div>
