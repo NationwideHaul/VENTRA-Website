@@ -104,7 +104,6 @@ export default function Footer() {
             >
               Terms &amp; Conditions
             </Link>
-            <span>Ventra works under Complete Carrier Coverage LLC</span>
           </div>
         </div>
 
