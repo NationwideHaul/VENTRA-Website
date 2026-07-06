@@ -84,7 +84,7 @@ export const industries: Industry[] = [
     valueProp:
       "Protection structured for storage operators, from the buildings to the tenants' goods.",
     exposureProfile:
-      "A storage operation is a property business with a customer-goods twist. The building values are high, but the subtler exposure is liability for tenants' stored property and the operations around it — sales and auctions of abandoned units, online rentals and payments, and the climate-control and access equipment that keeps the site running. Single small facilities often fall below a premium threshold; larger sites, multi-building campuses, and portfolios are where this class belongs.",
+      "A storage operation is a property business with a customer-goods twist. The building values are high, but the subtler exposure is liability for tenants' stored property and the operations around it — sales and auctions of abandoned units, online rentals and payments, and the climate-control and access equipment that keeps the site running. Larger sites, multi-building campuses, and portfolios are where these exposures compound — and where a purpose-built program matters most.",
     core: [
       { name: "Commercial Property" },
       { name: "General Liability" },
@@ -200,7 +200,7 @@ export const industries: Industry[] = [
     valueProp:
       "Coverage for medical offices, senior living, and the people in their care.",
     exposureProfile:
-      "This is the richest premium class on the board, and the highest-stakes. The core exposure is professional liability — the quality and outcome of care — layered over the duty to protect vulnerable residents and patients, heavy regulatory oversight, and sensitive health data. The combination of professional, property, and workers' comp exposure pushes minimums well above the floor. (Assisted living, skilled nursing, and medical facilities.)",
+      "Few industries carry higher stakes than caring for people. The core exposure is professional liability — the quality and outcome of care — layered over the duty to protect vulnerable residents and patients, heavy regulatory oversight, and sensitive health data. Professional, property, and workers' comp exposure all run through one operation, so the program has to be built as a whole. (Assisted living, skilled nursing, and medical facilities.)",
     core: [
       { name: "General Liability" },
       { name: "Commercial Property" },
