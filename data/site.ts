@@ -51,11 +51,11 @@ export const contact = {
     "101 Plaza Real S, Suite 224, Boca Raton, FL 33432, United States",
 } as const;
 
-/** Social profiles — [CONFIRM] official Ventra LinkedIn URL. */
+/** Social profiles. */
 export const social = {
   linkedin:
     process.env.NEXT_PUBLIC_LINKEDIN_URL ??
-    "https://www.linkedin.com/company/ventra-insurance-group",
+    "https://www.linkedin.com/company/ventra-insurance-group/",
 } as const;
 
 /** Footer legal + licensing — [CONFIRM] exact wording with manager. */

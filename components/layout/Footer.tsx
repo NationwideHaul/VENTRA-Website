@@ -62,7 +62,6 @@ export default function Footer() {
               <p className="text-sand/60">{contact.address}</p>
             </div>
 
-            {/* [CONFIRM] official LinkedIn URL */}
             <a
               href={social.linkedin}
               target="_blank"
