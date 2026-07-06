@@ -28,7 +28,7 @@ const FAQ: Category[] = [
       },
       {
         q: "Are you a national agency?",
-        a: "Yes. Ventra is a commercial insurance brokerage operating across the United States, placing coverage through top-rated national and specialty carriers. Wherever your business operates, we can structure a program for it.",
+        a: "Yes. Ventra is a commercial insurance agency operating across the United States, placing coverage through top-rated national and specialty carriers. Wherever your business operates, we can structure a program for it.",
       },
       {
         q: "How is Ventra different from a regular insurance agency?",

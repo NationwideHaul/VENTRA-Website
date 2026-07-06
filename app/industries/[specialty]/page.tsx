@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { existsSync } from "fs";
+import { join } from "path";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Section from "@/components/motion/Section";
@@ -15,18 +17,18 @@ import { industries, getIndustry } from "@/data/industries";
  * once-a-year transactional agency overlooks.
  */
 
-// Slugs with a real illustration in /public/branding/illustrations (the 7
-// primary-focus industries). `?v=` cache-busts re-exports over the same name.
-const ILLUSTRATED = new Set([
-  "contractors",
-  "self-storage",
-  "habitation-multifamily",
-  "real-estate",
-  "hospitality",
-  "healthcare",
-  "warehousing-logistics",
-]);
+// Every industry hero shows an illustration: the slug's own file when it
+// exists in /public/branding/illustrations (the 7 primary-focus industries —
+// drop in `<slug>.png` to give any other industry its own art), otherwise the
+// shared brand illustration. `?v=` cache-busts re-exports over the same name.
 const ART_VERSION = "3";
+function artSlug(slug: string): string {
+  return existsSync(
+    join(process.cwd(), "public/branding/illustrations", `${slug}.png`),
+  )
+    ? slug
+    : "more-industries";
+}
 
 export function generateStaticParams() {
   return industries.map((i) => ({ specialty: i.slug }));
@@ -56,22 +58,16 @@ export default async function IndustryPage({
   if (!industry) notFound();
 
   const isFront = industry.tier === "front";
-  const hasArt = ILLUSTRATED.has(industry.slug);
+  const art = artSlug(industry.slug);
 
   return (
     <>
-      {/* Hero — white; leads with the exposure profile. Featured industries
-          show their illustration (white canvas blends on the white hero). */}
+      {/* Hero — white; leads with the exposure profile. Every industry shows
+          an illustration (white canvas blends on the white hero). */}
       <section className="bg-white">
         <div className="container-page py-[clamp(4rem,9vw,8rem)]">
-          <div
-            className={
-              hasArt
-                ? "grid items-center gap-10 lg:grid-cols-12 lg:gap-14"
-                : ""
-            }
-          >
-            <div className={hasArt ? "lg:col-span-7" : ""}>
+          <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
+            <div className="lg:col-span-7">
               <Reveal>
                 <p className="eyebrow text-rust mb-4">
                   {isFront ? "Primary focus" : "Industry"}
@@ -94,16 +90,14 @@ export default async function IndustryPage({
               </Reveal>
             </div>
 
-            {hasArt && (
-              <Reveal delay={120} className="lg:col-span-5">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`/branding/illustrations/${industry.slug}.png?v=${ART_VERSION}`}
-                  alt={`${industry.name} illustration`}
-                  className="mx-auto aspect-[3/2] w-full max-w-md object-contain lg:ml-auto"
-                />
-              </Reveal>
-            )}
+            <Reveal delay={120} className="lg:col-span-5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/branding/illustrations/${art}.png?v=${ART_VERSION}`}
+                alt={`${industry.name} illustration`}
+                className="mx-auto aspect-[3/2] w-full max-w-md object-contain lg:ml-auto"
+              />
+            </Reveal>
           </div>
         </div>
       </section>

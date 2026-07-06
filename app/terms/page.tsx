@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 /**
  * Starter Terms & Conditions. The copy below is professional boilerplate for
- * a commercial insurance brokerage — it should be reviewed and finalized by
+ * a commercial insurance agency — it should be reviewed and finalized by
  * legal counsel before launch. Company-specific details flagged [CONFIRM].
  */
 export default function TermsPage() {
@@ -23,7 +23,7 @@ export default function TermsPage() {
         {
           heading: "About Ventra",
           body: [
-            "Ventra Insurance Group LLC is a licensed commercial insurance brokerage operating in all 50 states. All policies are placed under Complete Carrier Coverage LLC and provided by third-party licensed insurers.",
+            "Ventra Insurance Group LLC is a licensed commercial insurance agency operating in all 50 states. All policies are placed under Complete Carrier Coverage LLC and provided by third-party licensed insurers.",
             "Nothing on this website constitutes an offer to insure, a binder, or a contract of insurance. Coverage is only bound when confirmed in writing by an authorized insurer.",
           ],
         },

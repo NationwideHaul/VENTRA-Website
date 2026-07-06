@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 /**
  * Starter Privacy Policy. The copy below is professional boilerplate for a
- * commercial insurance brokerage — it should be reviewed and finalized by
+ * commercial insurance agency — it should be reviewed and finalized by
  * legal counsel before launch. Company-specific details flagged [CONFIRM].
  */
 export default function PrivacyPage() {

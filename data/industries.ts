@@ -131,7 +131,6 @@ export const industries: Industry[] = [
       { name: "Earthquake", note: "Geography-dependent." },
       { name: "Directors & Officers", note: "HOA and condo association boards." },
       { name: "Crime / Fidelity", note: "Association funds." },
-      { name: "Abuse & Molestation", note: "On-site staff and contractor exposure." },
       { name: "Cyber", note: "Resident data and payment systems." },
     ],
   },
@@ -210,7 +209,6 @@ export const industries: Industry[] = [
     ],
     specialty: [
       { name: "Professional / Medical Liability", note: "The central exposure." },
-      { name: "Abuse & Molestation", note: "Care of vulnerable populations." },
       { name: "Directors & Officers" },
       { name: "Employment Practices Liability (EPLI)" },
       { name: "Cyber", note: "PHI / HIPAA exposure." },
@@ -256,7 +254,7 @@ export const industries: Industry[] = [
     href: "/industries/manufacturing",
     tier: "more",
     exposureProfile:
-      "Product liability, large property and equipment values, and supply-chain interruption.",
+      "A manufacturer's risk starts with the product itself — something you made ends up in someone else's hands, and a defect can surface as a claim years after it shipped. Behind that sit large property and equipment values concentrated in one or two plants, and a supply chain where a single interruption can stop production entirely.",
     valueProp:
       "Product liability, large property and equipment values, and supply-chain interruption.",
     core: [
@@ -283,7 +281,7 @@ export const industries: Industry[] = [
     href: "/industries/wholesale-distribution",
     tier: "more",
     exposureProfile:
-      "Large inventory, products passing through your hands, and fleet and warehouse operations.",
+      "Distribution risk is volume in motion. Large inventory values sit in your warehouses, products you didn't manufacture pass through your hands on their way to market — carrying their liability with them — and a fleet keeps everything moving in between. The program has to cover the goods, the movement, and the premises together.",
     valueProp:
       "Large inventory, products passing through your hands, and fleet and warehouse operations.",
     core: [
@@ -309,7 +307,7 @@ export const industries: Industry[] = [
     href: "/industries/retail",
     tier: "more",
     exposureProfile:
-      "Customer foot traffic, inventory, point-of-sale data, and premises liability.",
+      "Retail lives on foot traffic, and every customer through the door is premises exposure. Behind the sales floor sit inventory values, point-of-sale systems holding customer payment data, and the everyday slip-and-fall claims that make up the bulk of the class. A strong program balances property, liability, and cyber as one package.",
     valueProp:
       "Customer foot traffic, inventory, point-of-sale data, and premises liability.",
     core: [
@@ -334,7 +332,7 @@ export const industries: Industry[] = [
     href: "/industries/restaurants",
     tier: "more",
     exposureProfile:
-      "Food handling, alcohol service, kitchen fire, and high employee turnover.",
+      "Few classes stack as many everyday hazards as food service — kitchen fire, foodborne illness, alcohol service, and a workforce that turns over quickly. One serious incident, a fire or a liquor claim, can close the doors for weeks; the program has to be built to keep the business running through it.",
     valueProp:
       "Food handling, alcohol service, kitchen fire, and high employee turnover.",
     core: [
@@ -362,7 +360,7 @@ export const industries: Industry[] = [
     href: "/industries/professional-services",
     tier: "more",
     exposureProfile:
-      "Advice and service errors, client financial harm, and employee disputes.",
+      "When your product is advice, your biggest exposure is being wrong — or being accused of it. A missed deadline, a flawed recommendation, or a client's financial loss can become a professional liability claim even when the work was sound. Add employee disputes and client data, and the program extends well past a standard office policy.",
     valueProp:
       "Advice and service errors, client financial harm, and employee disputes.",
     core: [
@@ -386,7 +384,7 @@ export const industries: Industry[] = [
     href: "/industries/technology",
     tier: "more",
     exposureProfile:
-      "Service failures, data exposure, IP, and product or software defects.",
+      "Technology companies sell performance — and when a platform goes down or a product fails, clients feel it immediately and financially. The exposure spans service errors, data breaches, intellectual property disputes, and product liability on the hardware side. Client contracts usually dictate the coverage before a carrier does.",
     valueProp:
       "Service failures, data exposure, IP, and product or software defects.",
     core: [
@@ -411,7 +409,7 @@ export const industries: Industry[] = [
     href: "/industries/financial-services",
     tier: "more",
     exposureProfile:
-      "Fiduciary duty, regulatory exposure, client financial harm, and fraud.",
+      "Financial services carry a duty most industries don't: other people's money. Regulatory oversight, fiduciary responsibility, fraud, and client claims of financial harm all sit on top of the ordinary office exposures — which is why the professional and management liability lines do the heavy lifting in this class.",
     valueProp:
       "Fiduciary duty, regulatory exposure, client financial harm, and fraud.",
     core: [
@@ -436,7 +434,7 @@ export const industries: Industry[] = [
     href: "/industries/education",
     tier: "more",
     exposureProfile:
-      "Care of minors, premises liability, employment, and governance.",
+      "Schools and educational programs are responsible for other people's children, and everything flows from that duty of care. Premises injuries, staff conduct, employment disputes, and board decisions all carry heightened scrutiny — and student data adds a growing cyber exposure on top.",
     valueProp: "Care of minors, premises liability, employment, and governance.",
     core: [
       { name: "General Liability" },
@@ -445,7 +443,6 @@ export const industries: Industry[] = [
       { name: "Commercial Umbrella" },
     ],
     specialty: [
-      { name: "Abuse & Molestation" },
       { name: "Educators Legal Liability / D&O" },
       { name: "Professional Liability" },
       { name: "EPLI" },
@@ -461,7 +458,7 @@ export const industries: Industry[] = [
     href: "/industries/nonprofit-religious",
     tier: "more",
     exposureProfile:
-      "Volunteer and board exposure, vulnerable populations, and donated funds.",
+      "Nonprofits run on volunteers, donations, and trust — and each carries its own exposure. Board members make decisions that can be challenged, staff and volunteers serve vulnerable populations, and donated funds need protecting from fraud. Coverage here has to stretch a careful budget across a wide risk profile.",
     valueProp:
       "Volunteer and board exposure, vulnerable populations, and donated funds.",
     core: [
@@ -472,7 +469,6 @@ export const industries: Industry[] = [
     ],
     specialty: [
       { name: "Directors & Officers" },
-      { name: "Abuse & Molestation" },
       { name: "EPLI" },
       { name: "Crime / Fidelity" },
       { name: "Professional Liability", note: "Counseling / services." },
@@ -487,7 +483,7 @@ export const industries: Industry[] = [
     href: "/industries/public-entities",
     tier: "more",
     exposureProfile:
-      "Broad public liability, governance, law enforcement, and infrastructure.",
+      "Public entities answer to everyone. The exposure spans public premises, employment practices, law enforcement activity, officials' decisions, and the infrastructure a community depends on — with public accountability and immunity rules shaping how every claim unfolds.",
     valueProp:
       "Broad public liability, governance, law enforcement, and infrastructure.",
     core: [
@@ -514,7 +510,7 @@ export const industries: Industry[] = [
     href: "/industries/energy-utilities",
     tier: "more",
     exposureProfile:
-      "High-hazard operations, large property, environmental, and contractor exposure.",
+      "Energy and utility operations combine high-hazard work with essential-service obligations. Large property schedules, environmental exposure, contractor-heavy operations, and severe loss potential mean the program is engineered line by line — not pulled off a shelf.",
     valueProp:
       "High-hazard operations, large property, environmental, and contractor exposure.",
     core: [
@@ -540,7 +536,7 @@ export const industries: Industry[] = [
     href: "/industries/agriculture",
     tier: "more",
     exposureProfile:
-      "Equipment, livestock and crops, seasonal labor, and property spread over acreage.",
+      "Farm risk is spread across acreage — buildings, equipment, livestock, and crops, each exposed to weather, breakdown, and timing. Seasonal labor and farm vehicles add liability on top, and a single storm can touch every line of the program at once.",
     valueProp:
       "Equipment, livestock and crops, seasonal labor, and property spread over acreage.",
     core: [
@@ -566,7 +562,7 @@ export const industries: Industry[] = [
     href: "/industries/automotive",
     tier: "more",
     exposureProfile:
-      "Customers' vehicles in your care, lot inventory, and service operations.",
+      "In automotive operations the core exposure is other people's vehicles — in your care for service, on your lot for sale, or up on a lift. Garage liability, garagekeepers, and lot coverage sit alongside the standard property and premises lines, and pollution exposure follows any shop with fluids and tanks.",
     valueProp:
       "Customers' vehicles in your care, lot inventory, and service operations.",
     core: [
@@ -592,7 +588,7 @@ export const industries: Industry[] = [
     href: "/industries/entertainment-recreation",
     tier: "more",
     exposureProfile:
-      "Participant and spectator injury, venues, and event-specific risk.",
+      "When the public shows up for entertainment, injury exposure shows up with them — participants, spectators, alcohol, and venues each add a layer. Event-driven operations also carry cancellation risk, where one rained-out weekend can erase a season's margin.",
     valueProp:
       "Participant and spectator injury, venues, and event-specific risk.",
     core: [
@@ -605,7 +601,6 @@ export const industries: Industry[] = [
       { name: "Participant Liability" },
       { name: "Event Cancellation" },
       { name: "Liquor Liability" },
-      { name: "Abuse & Molestation" },
       { name: "Equipment / Inland Marine" },
       { name: "Hired & Non-Owned Auto" },
     ],
@@ -617,7 +612,7 @@ export const industries: Industry[] = [
     href: "/industries/sports-fitness",
     tier: "more",
     exposureProfile:
-      "Participant injury, equipment, instruction and training, and member data.",
+      "Sports and fitness operations trade in physical activity, so participant injury is the baseline exposure. Instruction and training add professional liability, equipment adds premises risk, and member billing systems hold the personal data that makes cyber coverage part of the core program.",
     valueProp:
       "Participant injury, equipment, instruction and training, and member data.",
     core: [
@@ -628,7 +623,6 @@ export const industries: Industry[] = [
     ],
     specialty: [
       { name: "Participant / Professional Liability" },
-      { name: "Abuse & Molestation" },
       { name: "Equipment Breakdown" },
       { name: "EPLI" },
       { name: "Cyber", note: "Member data." },
@@ -642,7 +636,7 @@ export const industries: Industry[] = [
     href: "/industries/personal-care-wellness",
     tier: "more",
     exposureProfile:
-      "Hands-on services, professional liability, premises, and client records.",
+      "Hands-on services mean hands-on liability. A treatment that goes wrong is a professional claim, not just a premises one — and client records, retail products, and specialized equipment each add an exposure a generic small-business policy overlooks.",
     valueProp:
       "Hands-on services, professional liability, premises, and client records.",
     core: [
@@ -653,7 +647,6 @@ export const industries: Industry[] = [
     ],
     specialty: [
       { name: "Professional Liability", note: "Treatments / services." },
-      { name: "Abuse & Molestation" },
       { name: "Cyber" },
       { name: "EPLI" },
       { name: "Product Liability", note: "Retail products." },
@@ -667,7 +660,7 @@ export const industries: Industry[] = [
     href: "/industries/life-sciences",
     tier: "more",
     exposureProfile:
-      "Product and clinical liability, R&D, regulatory, and IP exposure.",
+      "Life sciences companies carry risk through the entire product lifecycle — research, clinical trials, regulatory approval, and market. Product and clinical liability lead the program, with recall, intellectual property, and pollution exposure close behind.",
     valueProp:
       "Product and clinical liability, R&D, regulatory, and IP exposure.",
     core: [
@@ -693,7 +686,7 @@ export const industries: Industry[] = [
     href: "/industries/environmental-services",
     tier: "more",
     exposureProfile:
-      "Pollution events, contractor operations, and disposal or remediation risk.",
+      "Environmental work exists because contamination is dangerous — which makes pollution liability the center of this program, not an add-on. Job-site operations, transport and disposal, and consulting advice each carry their own version of the exposure, and standard forms exclude most of it.",
     valueProp:
       "Pollution events, contractor operations, and disposal or remediation risk.",
     core: [
@@ -718,7 +711,7 @@ export const industries: Industry[] = [
     href: "/industries/marine",
     tier: "more",
     exposureProfile:
-      "Vessels, cargo, dock operations, and property over or near water.",
+      "Marine risk lives where standard policies stop — at the water's edge. Vessels, cargo, docks, and marina operations need marine-specific forms, and property over or near water carries wind and flood exposure that inland programs rarely contemplate.",
     valueProp:
       "Vessels, cargo, dock operations, and property over or near water.",
     core: [
@@ -744,7 +737,7 @@ export const industries: Industry[] = [
     href: "/industries/media-communications",
     tier: "more",
     exposureProfile:
-      "Content liability, IP and defamation, data, and service errors.",
+      "Media companies publish, and publishing creates liability — defamation, copyright, and intellectual property claims that follow the content wherever it runs. Service errors and data exposure round out a program that is mostly about intangible risk.",
     valueProp:
       "Content liability, IP and defamation, data, and service errors.",
     core: [

@@ -166,11 +166,6 @@ export const coverageGroups: CoverageGroup[] = [
         blurb: "Covers cleanup costs and claims from pollution events.",
       },
       {
-        name: "Abuse & Molestation",
-        blurb:
-          "Covers abuse claims — critical for any business serving vulnerable populations.",
-      },
-      {
         name: "Crime / Fidelity",
         blurb:
           "Covers employee theft, fraud, forgery, and similar financial crime.",

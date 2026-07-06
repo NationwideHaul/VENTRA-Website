@@ -111,7 +111,7 @@ export default function Footer() {
         {/* Legal disclaimer — full width so it reads as continuous text */}
         <p className="mt-6 text-[0.6875rem] leading-relaxed text-sand/40">
           Ventra Insurance Group LLC is a licensed commercial insurance
-          brokerage operating in all 50 states. All policies are placed under
+          agency operating in all 50 states. All policies are placed under
           Complete Carrier Coverage LLC, provided by third-party licensed
           insurers. Products, coverage terms, availability, and pricing may vary
           by state and are subject to insurer underwriting guidelines. Please

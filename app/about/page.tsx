@@ -75,14 +75,26 @@ const SPECIALTY_CARRIERS = [
 ];
 
 /* ---------------------------------------------------------------------------
-   Section 4 — lead advisor. [CONFIRM] title + bio; how many advisors to show
-   at launch is pending Derek's sign-off.
+   Section 4 — the team. Photos live in /public/branding/advisors (square
+   JPEGs, ~800px).
 --------------------------------------------------------------------------- */
-const LEAD_ADVISOR = {
-  name: "Andrew Sloan",
-  role: "Principal Advisor", // [CONFIRM] title
-  photo: "/branding/advisors/andrew-sloan.jpg",
-};
+const TEAM = [
+  {
+    name: "Derek Madon",
+    role: "Agency Principal",
+    photo: "/branding/advisors/derek-madon.jpg",
+  },
+  {
+    name: "Andrew Sloan",
+    role: "Director of Commercial Lines",
+    photo: "/branding/advisors/andrew-sloan.jpg",
+  },
+  {
+    name: "Adriana Sanchez",
+    role: "Marketing Manager",
+    photo: "/branding/advisors/adriana-sanchez.jpg",
+  },
+];
 
 function CarrierColumn({ label, names }: { label: string; names: string[] }) {
   return (
@@ -184,41 +196,41 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Section 4 — Meet the advisors ([CONFIRM] — more advisors pending) */}
+      {/* Section 4 — Meet the team */}
       <Section className="bg-white">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          <div>
-            <p className="eyebrow text-rust">Meet the advisors</p>
-            <h2 className="mt-2 text-3xl font-bold text-ink sm:text-4xl">
-              Advisors who already know your industry.
-            </h2>
-            <p className="mt-4 max-w-md leading-relaxed text-ink/65">
-              You work with a dedicated advisor who understands how your
-              business operates — not a call center. Someone who stays with you
-              as your business grows.
-            </p>
-            <div className="mt-8 border-t border-ink/10 pt-6">
-              <p className="font-heading text-xl text-ink">
-                {LEAD_ADVISOR.name}
-              </p>
-              <p className="mt-1 text-rust">{LEAD_ADVISOR.role}</p>
-            </div>
-          </div>
-
-          <div className="relative mx-auto w-full max-w-sm lg:mx-0 lg:ml-auto">
-            <div
-              aria-hidden
-              className="absolute -right-5 -top-5 bottom-8 left-10 rounded-3xl bg-rust/15 sm:-right-7 sm:-top-7"
-            />
-            <div className="relative overflow-hidden rounded-3xl shadow-2xl ring-1 ring-ink/10">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={LEAD_ADVISOR.photo}
-                alt={LEAD_ADVISOR.name}
-                className="aspect-square w-full object-cover"
-              />
-            </div>
-          </div>
+        <p className="eyebrow text-rust">Meet the team</p>
+        <h2 className="mt-2 max-w-2xl text-3xl font-bold text-ink sm:text-4xl">
+          The people behind Ventra.
+        </h2>
+        <p className="mt-4 max-w-xl leading-relaxed text-ink/65">
+          You work with people who understand how your business operates — not
+          a call center. A team that stays with you as your business grows.
+        </p>
+        <div className="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          {TEAM.map((member, i) => (
+            <Reveal key={member.name} delay={i * 90}>
+              <div className="group">
+                <div className="relative">
+                  <div
+                    aria-hidden
+                    className="absolute -right-3 -top-3 bottom-6 left-6 rounded-3xl bg-rust/15 transition-transform duration-300 group-hover:-translate-y-1"
+                  />
+                  <div className="relative overflow-hidden rounded-3xl shadow-xl ring-1 ring-ink/10">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={member.photo}
+                      alt={member.name}
+                      className="aspect-square w-full object-cover"
+                    />
+                  </div>
+                </div>
+                <div className="mt-6 border-t border-ink/10 pt-4">
+                  <p className="font-heading text-xl text-ink">{member.name}</p>
+                  <p className="mt-1 text-rust">{member.role}</p>
+                </div>
+              </div>
+            </Reveal>
+          ))}
         </div>
       </Section>
 
