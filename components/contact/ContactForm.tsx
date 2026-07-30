@@ -21,7 +21,7 @@ import SearchSelect, { type SelectOption } from "@/components/ui/SearchSelect";
  *   2. Your business       — business name, state (searchable), EIN (optional),
  *      industry / business class (searchable, 126 options + Other), about
  *
- * Submits to /api/contact and routes to /thank-you on success.
+ * Submits to /api/lead (formId "contacto") and routes to /thank-you on success.
  */
 
 type Props = {
@@ -44,9 +44,29 @@ type FormState = {
   industry: string;
   otherIndustry: string;
   about: string;
-  // Honeypot — must stay empty; only bots fill it.
-  company: string;
+  // Honeypot — must stay empty; only bots fill it. Sent as `_hp` to /api/lead.
+  _hp: string;
 };
+
+/** Read UTM / click-id params from the current URL, if any. */
+function readUtm(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  const p = new URLSearchParams(window.location.search);
+  const out: Record<string, string> = {};
+  for (const k of [
+    "utm_source",
+    "utm_medium",
+    "utm_campaign",
+    "utm_term",
+    "utm_content",
+    "gclid",
+    "fbclid",
+  ]) {
+    const v = p.get(k);
+    if (v) out[k] = v;
+  }
+  return out;
+}
 
 const STEPS = [
   { id: 1, label: "Contact" },
@@ -94,7 +114,7 @@ export default function ContactForm({ initialState, onClose }: Props) {
     industry: "",
     otherIndustry: "",
     about: "",
-    company: "",
+    _hp: "",
   });
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [touched, setTouched] = useState(false);
@@ -143,10 +163,32 @@ export default function ContactForm({ initialState, onClose }: Props) {
     }
     setStatus("submitting");
     try {
-      const res = await fetch("/api/contact", {
+      const stateLabel =
+        STATE_OPTIONS.find((o) => o.value === data.state)?.label ?? data.state;
+      const res = await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          formId: "contacto",
+          name: `${data.firstName} ${data.lastName}`.trim(),
+          email: data.email.trim(),
+          phone: data.phone.trim(),
+          company: data.businessName.trim(),
+          fields: {
+            firstName: data.firstName.trim(),
+            lastName: data.lastName.trim(),
+            state: stateLabel,
+            ein: data.ein.trim(),
+            industry: needsOther
+              ? `Other: ${data.otherIndustry.trim()}`
+              : data.industry,
+            about: data.about.trim(),
+          },
+          utm: readUtm(),
+          pageUrl:
+            typeof window !== "undefined" ? window.location.href : "",
+          _hp: data._hp,
+        }),
       });
       if (!res.ok) throw new Error("Request failed");
       onClose?.();
@@ -210,16 +252,17 @@ export default function ContactForm({ initialState, onClose }: Props) {
       </div>
 
       <form onSubmit={handleSubmit} noValidate>
-        {/* Honeypot — hidden from users, catches bots. */}
+        {/* Honeypot — hidden off-screen, catches bots; humans never see it. */}
         <div aria-hidden className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
-          <label htmlFor="company">Company (leave blank)</label>
+          <label htmlFor="_hp">Company (leave blank)</label>
           <input
-            id="company"
+            id="_hp"
+            name="_hp"
             type="text"
             tabIndex={-1}
             autoComplete="off"
-            value={data.company}
-            onChange={(e) => set("company", e.target.value)}
+            value={data._hp}
+            onChange={(e) => set("_hp", e.target.value)}
           />
         </div>
 
