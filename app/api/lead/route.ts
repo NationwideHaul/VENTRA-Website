@@ -32,6 +32,22 @@ const leadSchema = z.object({
   _hp: z.string().optional().default(""),
 });
 
+// Best-effort in-memory rate limit (per warm serverless instance). The honeypot
+// stops most bots; this caps rapid repeat submissions from one IP so a script
+// can't flood the inbox / CRM / Supabase. For strict cross-instance limits, back
+// this with a shared store (e.g. Upstash Redis).
+const RATE_LIMIT = 6; // submissions
+const RATE_WINDOW_MS = 10 * 60 * 1000; // per 10 minutes
+const hits = new Map<string, number[]>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const recent = (hits.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+  recent.push(now);
+  hits.set(ip, recent);
+  return recent.length > RATE_LIMIT;
+}
+
 export async function POST(request: Request) {
   let body: unknown;
   try {
@@ -56,6 +72,12 @@ export async function POST(request: Request) {
   const fwd = request.headers.get("x-forwarded-for") ?? "";
   const ip =
     fwd.split(",")[0].trim() || request.headers.get("x-real-ip") || null;
+
+  // Rate limit before doing any work (DB write / email).
+  if (ip && isRateLimited(ip)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const userAgent = request.headers.get("user-agent") || null;
   const leadSource = data.utm.utm_source ?? data.utm.source ?? null;
   const medium = data.utm.utm_medium ?? data.utm.medium ?? null;
