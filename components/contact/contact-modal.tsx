@@ -107,7 +107,7 @@ function ContactModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-ink/60 px-4 py-[6vh] backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto overscroll-contain bg-ink/60 px-4 py-[5vh] backdrop-blur-sm"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -117,13 +117,13 @@ function ContactModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="contact-modal-title"
-        className="relative w-full max-w-lg rounded-2xl bg-white p-7 shadow-2xl sm:p-8"
+        className="relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
       >
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full text-ink/50 transition-colors hover:bg-ink/5 hover:text-ink"
+          className="absolute right-4 top-4 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-ink/50 backdrop-blur transition-colors hover:bg-ink/5 hover:text-ink"
         >
           <svg
             viewBox="0 0 20 20"
@@ -138,19 +138,18 @@ function ContactModal({
           </svg>
         </button>
 
-        <p className="eyebrow text-rust">Start a Conversation</p>
-        <h2
-          id="contact-modal-title"
-          className="mb-6 mt-1 font-heading text-2xl font-bold text-ink"
-        >
-          Let&rsquo;s connect you with an advisor.
-        </h2>
+        {/* Scrollable body — keeps the whole form reachable inside the modal. */}
+        <div className="overflow-y-auto overscroll-contain p-7 sm:p-8">
+          <p className="eyebrow text-rust">Start a Conversation</p>
+          <h2
+            id="contact-modal-title"
+            className="mb-6 mt-1 font-heading text-2xl font-bold text-ink"
+          >
+            Let&rsquo;s connect you with an advisor.
+          </h2>
 
-        <ContactForm
-          initialIndustry={prefill.industry}
-          initialState={prefill.state}
-          onClose={onClose}
-        />
+          <ContactForm initialState={prefill.state} onClose={onClose} />
+        </div>
       </div>
     </div>
   );

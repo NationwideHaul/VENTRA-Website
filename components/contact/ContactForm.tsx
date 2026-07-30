@@ -2,8 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { frontIndustries, moreIndustries } from "@/data/industries";
 import { usStates } from "@/data/states";
+import {
+  businessClasses,
+  OTHER_BUSINESS_CLASS,
+} from "@/data/business-classes";
+import SearchSelect, { type SelectOption } from "@/components/ui/SearchSelect";
 
 /**
  * The single "Start a Conversation" intake form, used in two places:
@@ -11,19 +15,16 @@ import { usStates } from "@/data/states";
  *   - inside the global modal opened by every CTA (contact-modal.tsx)
  *
  * It renders only the stepper + fields + nav; the parent supplies the card /
- * dialog chrome. Three guided stages:
- *   1. Contact information — name, email, phone
- *   2. Your business       — name, address, industry, about, year started
- *   3. How can we help     — current insurance? + consultation vs. new quote
+ * dialog chrome. Two guided stages:
+ *   1. Contact information — first/last name, email, phone (email + phone are
+ *      auto-validated inline with a check indicator)
+ *   2. Your business       — business name, state (searchable), EIN (optional),
+ *      industry / business class (searchable, 126 options + Other), about
  *
- * Submits to /api/contact and routes to /thank-you on success. Per the client,
- * this collects a full business address (incl. ZIP) and a quote/consultation
- * intent — a deliberate override of the earlier "no ZIP / no quote" default.
+ * Submits to /api/contact and routes to /thank-you on success.
  */
 
 type Props = {
-  /** Industry slug pre-selected from the home hero (?industry=…). */
-  initialIndustry?: string;
   /** State code pre-selected from a CTA prefill. */
   initialState?: string;
   /** Called on successful submit (e.g. to close the modal) before navigating. */
@@ -38,45 +39,48 @@ type FormState = {
   phone: string;
   // Step 2 — business
   businessName: string;
-  address: string;
-  city: string;
   state: string;
-  zip: string;
+  ein: string;
   industry: string;
+  otherIndustry: string;
   about: string;
-  yearStarted: string;
-  // Step 3 — intent
-  hasInsurance: "" | "yes" | "no";
-  intent: "" | "consultation" | "quote";
+  // Honeypot — must stay empty; only bots fill it.
+  company: string;
 };
 
 const STEPS = [
   { id: 1, label: "Contact" },
-  { id: 2, label: "Business" },
-  { id: 3, label: "How we help" },
+  { id: 2, label: "Your business" },
 ] as const;
 
-const INTENT_OPTIONS = [
-  {
-    value: "consultation" as const,
-    label: "Schedule a consultation",
-    desc: "Talk through your business with an advisor.",
-  },
-  {
-    value: "quote" as const,
-    label: "Request a new quote",
-    desc: "Get coverage options and pricing.",
-  },
-];
+const STATE_OPTIONS: SelectOption[] = usStates.map((s) => ({
+  value: s.code,
+  label: s.name,
+}));
+const INDUSTRY_OPTIONS: SelectOption[] = businessClasses.map((c) => ({
+  value: c,
+  label: c,
+}));
 
-const emailOk = (v: string) => /^\S+@\S+\.\S+$/.test(v);
-const yearOk = (v: string) => /^(19|20)\d{2}$/.test(v) && Number(v) <= 2026;
+const emailOk = (v: string) => /^\S+@\S+\.\S+$/.test(v.trim());
+const digits = (v: string) => v.replace(/\D/g, "");
+const phoneOk = (v: string) => digits(v).length === 10;
+const einOk = (v: string) => digits(v).length === 9;
 
-export default function ContactForm({
-  initialIndustry,
-  initialState,
-  onClose,
-}: Props) {
+const formatPhone = (v: string) => {
+  const d = digits(v).slice(0, 10);
+  if (d.length <= 3) return d;
+  if (d.length <= 6) return `(${d.slice(0, 3)}) ${d.slice(3)}`;
+  return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
+};
+
+const formatEIN = (v: string) => {
+  const d = digits(v).slice(0, 9);
+  if (d.length <= 2) return d;
+  return `${d.slice(0, 2)}-${d.slice(2)}`;
+};
+
+export default function ContactForm({ initialState, onClose }: Props) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [data, setData] = useState<FormState>({
@@ -85,21 +89,20 @@ export default function ContactForm({
     email: "",
     phone: "",
     businessName: "",
-    address: "",
-    city: "",
     state: initialState ?? "",
-    zip: "",
-    industry: initialIndustry ?? "",
+    ein: "",
+    industry: "",
+    otherIndustry: "",
     about: "",
-    yearStarted: "",
-    hasInsurance: "",
-    intent: "",
+    company: "",
   });
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [touched, setTouched] = useState(false);
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setData((d) => ({ ...d, [key]: value }));
+
+  const needsOther = data.industry === OTHER_BUSINESS_CLASS;
 
   // Per-step required-field validation gates the Continue / Submit buttons.
   const stepValid = useMemo(() => {
@@ -108,20 +111,15 @@ export default function ContactForm({
         data.firstName.trim() !== "" &&
         data.lastName.trim() !== "" &&
         emailOk(data.email) &&
-        data.phone.trim() !== ""
+        phoneOk(data.phone)
       );
-    if (step === 2)
-      return (
-        data.businessName.trim() !== "" &&
-        data.address.trim() !== "" &&
-        data.city.trim() !== "" &&
-        data.state !== "" &&
-        /^\d{5}$/.test(data.zip) &&
-        data.industry !== "" &&
-        yearOk(data.yearStarted)
-      );
-    return data.hasInsurance !== "" && data.intent !== "";
-  }, [step, data]);
+    return (
+      data.businessName.trim() !== "" &&
+      data.state !== "" &&
+      data.industry !== "" &&
+      (!needsOther || data.otherIndustry.trim() !== "")
+    );
+  }, [step, data, needsOther]);
 
   function next() {
     if (!stepValid) {
@@ -169,6 +167,24 @@ export default function ContactForm({
 
   const active = STEPS[step - 1];
 
+  // Small green check shown inside a field once its value is valid.
+  const Verified = ({ show }: { show: boolean }) =>
+    show ? (
+      <span
+        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-green-600"
+        aria-label="Looks good"
+        title="Looks good"
+      >
+        <svg viewBox="0 0 20 20" className="h-5 w-5" fill="currentColor" aria-hidden>
+          <path
+            fillRule="evenodd"
+            d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.7-9.3a1 1 0 0 0-1.4-1.4L9 10.6 7.7 9.3a1 1 0 0 0-1.4 1.4l2 2a1 1 0 0 0 1.4 0l4-4Z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </span>
+    ) : null;
+
   return (
     <div>
       {/* Progress — labeled bar */}
@@ -194,6 +210,19 @@ export default function ContactForm({
       </div>
 
       <form onSubmit={handleSubmit} noValidate>
+        {/* Honeypot — hidden from users, catches bots. */}
+        <div aria-hidden className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
+          <label htmlFor="company">Company (leave blank)</label>
+          <input
+            id="company"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={data.company}
+            onChange={(e) => set("company", e.target.value)}
+          />
+        </div>
+
         {/* Step 1 — Contact information */}
         {step === 1 && (
           <div className="panel-in space-y-5">
@@ -225,29 +254,37 @@ export default function ContactForm({
             </div>
             <div>
               <label htmlFor="email" className={labelCls}>
-                Email
+                Email address
               </label>
-              <input
-                id="email"
-                type="email"
-                value={data.email}
-                onChange={(e) => set("email", e.target.value)}
-                autoComplete="email"
-                className={field + errCls(!emailOk(data.email))}
-              />
+              <div className="relative">
+                <input
+                  id="email"
+                  type="email"
+                  value={data.email}
+                  onChange={(e) => set("email", e.target.value)}
+                  autoComplete="email"
+                  className={field + " pr-11" + errCls(!emailOk(data.email))}
+                />
+                <Verified show={emailOk(data.email)} />
+              </div>
             </div>
             <div>
               <label htmlFor="phone" className={labelCls}>
-                Phone
+                Phone number
               </label>
-              <input
-                id="phone"
-                type="tel"
-                value={data.phone}
-                onChange={(e) => set("phone", e.target.value)}
-                autoComplete="tel"
-                className={field + errCls(data.phone.trim() === "")}
-              />
+              <div className="relative">
+                <input
+                  id="phone"
+                  type="tel"
+                  inputMode="tel"
+                  value={data.phone}
+                  onChange={(e) => set("phone", formatPhone(e.target.value))}
+                  autoComplete="tel"
+                  placeholder="(555) 123-4567"
+                  className={field + " pr-11" + errCls(!phoneOk(data.phone))}
+                />
+                <Verified show={phoneOk(data.phone)} />
+              </div>
             </div>
           </div>
         )}
@@ -269,109 +306,64 @@ export default function ContactForm({
               />
             </div>
             <div>
-              <label htmlFor="industry" className={labelCls}>
-                Industry
+              <label htmlFor="state" className={labelCls}>
+                State
               </label>
-              <select
-                id="industry"
-                value={data.industry}
-                onChange={(e) => set("industry", e.target.value)}
-                className={field + errCls(data.industry === "")}
-              >
-                <option value="">Select your industry…</option>
-                <optgroup label="Primary focus">
-                  {frontIndustries.map((i) => (
-                    <option key={i.slug} value={i.slug}>
-                      {i.name}
-                    </option>
-                  ))}
-                </optgroup>
-                <optgroup label="More industries">
-                  {moreIndustries.map((i) => (
-                    <option key={i.slug} value={i.slug}>
-                      {i.name}
-                    </option>
-                  ))}
-                </optgroup>
-                <option value="other">Other / not sure yet</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="address" className={labelCls}>
-                Business address
-              </label>
-              <input
-                id="address"
-                value={data.address}
-                onChange={(e) => set("address", e.target.value)}
-                autoComplete="street-address"
-                placeholder="Street address"
-                className={field + errCls(data.address.trim() === "")}
+              <SearchSelect
+                id="state"
+                value={data.state}
+                onChange={(v) => set("state", v)}
+                options={STATE_OPTIONS}
+                placeholder="Select your state…"
+                searchPlaceholder="Search states…"
+                invalid={touched && data.state === ""}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="city" className={labelCls}>
-                  City
-                </label>
+            <div>
+              <label htmlFor="ein" className={labelCls}>
+                EIN{" "}
+                <span className="font-normal normal-case tracking-normal text-ink/40">
+                  (optional)
+                </span>
+              </label>
+              <div className="relative">
                 <input
-                  id="city"
-                  value={data.city}
-                  onChange={(e) => set("city", e.target.value)}
-                  autoComplete="address-level2"
-                  className={field + errCls(data.city.trim() === "")}
+                  id="ein"
+                  value={data.ein}
+                  onChange={(e) => set("ein", formatEIN(e.target.value))}
+                  inputMode="numeric"
+                  placeholder="12-3456789"
+                  className={field + " pr-11"}
                 />
-              </div>
-              <div>
-                <label htmlFor="state" className={labelCls}>
-                  State
-                </label>
-                <select
-                  id="state"
-                  value={data.state}
-                  onChange={(e) => set("state", e.target.value)}
-                  autoComplete="address-level1"
-                  className={field + errCls(data.state === "")}
-                >
-                  <option value="">Select…</option>
-                  {usStates.map((s) => (
-                    <option key={s.code} value={s.code}>
-                      {s.name}
-                    </option>
-                  ))}
-                </select>
+                <Verified show={einOk(data.ein)} />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="zip" className={labelCls}>
-                  ZIP code
-                </label>
+            <div>
+              <label htmlFor="industry" className={labelCls}>
+                Industry / business class
+              </label>
+              <SearchSelect
+                id="industry"
+                value={data.industry}
+                onChange={(v) => set("industry", v)}
+                options={INDUSTRY_OPTIONS}
+                placeholder="Select your industry…"
+                searchPlaceholder="Search 120+ classes…"
+                invalid={touched && data.industry === ""}
+              />
+              {needsOther && (
                 <input
-                  id="zip"
-                  value={data.zip}
-                  onChange={(e) => set("zip", e.target.value)}
-                  inputMode="numeric"
-                  autoComplete="postal-code"
-                  maxLength={5}
-                  placeholder="12345"
-                  className={field + errCls(!/^\d{5}$/.test(data.zip))}
+                  id="otherIndustry"
+                  value={data.otherIndustry}
+                  onChange={(e) => set("otherIndustry", e.target.value)}
+                  placeholder="Please specify your industry"
+                  className={
+                    field +
+                    " mt-3" +
+                    errCls(data.otherIndustry.trim() === "")
+                  }
                 />
-              </div>
-              <div>
-                <label htmlFor="yearStarted" className={labelCls}>
-                  Year started
-                </label>
-                <input
-                  id="yearStarted"
-                  value={data.yearStarted}
-                  onChange={(e) => set("yearStarted", e.target.value)}
-                  inputMode="numeric"
-                  maxLength={4}
-                  placeholder="2015"
-                  className={field + errCls(!yearOk(data.yearStarted))}
-                />
-              </div>
+              )}
             </div>
             <div>
               <label htmlFor="about" className={labelCls}>
@@ -389,74 +381,6 @@ export default function ContactForm({
                 className={area}
               />
             </div>
-          </div>
-        )}
-
-        {/* Step 3 — How can we help */}
-        {step === 3 && (
-          <div className="panel-in space-y-6">
-            <fieldset>
-              <legend className={labelCls}>
-                Do you currently have insurance?
-              </legend>
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { value: "yes", label: "Yes, I have coverage" },
-                  { value: "no", label: "No, not yet" },
-                ].map((o) => {
-                  const selected = data.hasInsurance === o.value;
-                  return (
-                    <button
-                      key={o.value}
-                      type="button"
-                      onClick={() =>
-                        set(
-                          "hasInsurance",
-                          o.value as FormState["hasInsurance"],
-                        )
-                      }
-                      aria-pressed={selected}
-                      className={`rounded-lg border px-4 py-3 text-left text-[0.95rem] font-medium transition ${
-                        selected
-                          ? "border-rust bg-rust/[0.06] text-ink ring-1 ring-rust/30"
-                          : "border-ink/15 text-ink/80 hover:border-ink/30"
-                      } ${touched && data.hasInsurance === "" ? "border-rust/60" : ""}`}
-                    >
-                      {o.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </fieldset>
-
-            <fieldset>
-              <legend className={labelCls}>What would you like to do?</legend>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {INTENT_OPTIONS.map((o) => {
-                  const selected = data.intent === o.value;
-                  return (
-                    <button
-                      key={o.value}
-                      type="button"
-                      onClick={() => set("intent", o.value)}
-                      aria-pressed={selected}
-                      className={`flex flex-col rounded-lg border px-4 py-3 text-left transition ${
-                        selected
-                          ? "border-rust bg-rust/[0.06] ring-1 ring-rust/30"
-                          : "border-ink/15 hover:border-ink/30"
-                      } ${touched && data.intent === "" ? "border-rust/60" : ""}`}
-                    >
-                      <span className="text-[0.95rem] font-medium text-ink">
-                        {o.label}
-                      </span>
-                      <span className="mt-1 text-sm leading-snug text-ink/55">
-                        {o.desc}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </fieldset>
           </div>
         )}
 
@@ -496,7 +420,7 @@ export default function ContactForm({
               disabled={status === "submitting"}
               className="inline-flex h-12 flex-1 items-center justify-center rounded-full bg-rust px-6 font-medium text-white transition-colors hover:bg-ink disabled:opacity-60"
             >
-              {status === "submitting" ? "Sending…" : "Start a Conversation"}
+              {status === "submitting" ? "Sending…" : "Schedule a Consultation"}
             </button>
           )}
         </div>

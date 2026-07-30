@@ -84,7 +84,7 @@ export default async function ContactPage({
 
         {/* Right — multi-step form */}
         <div className="rounded-2xl border border-ink/10 bg-white p-6 shadow-xl shadow-ink/[0.04] sm:p-8">
-          <ContactForm initialIndustry={industry} />
+          <ContactForm />
         </div>
       </div>
     </Section>
