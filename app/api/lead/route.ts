@@ -105,12 +105,14 @@ export async function POST(request: Request) {
 
   // 2) Notify via Resend — failure here must NOT fail the request.
   let emailStatus: "sent" | "failed" = "failed";
+  let resendId: string | null = null;
+  let emailError: string | null = null;
   const apiKey = process.env.RESEND_API_KEY;
   if (apiKey) {
     try {
       const resend = new Resend(apiKey);
       const { subject, html, text } = buildLeadEmail(route, data);
-      const { error } = await resend.emails.send({
+      const { data: sent, error } = await resend.emails.send({
         from: brandConfig.from,
         to: route.to,
         replyTo: data.email,
@@ -119,8 +121,10 @@ export async function POST(request: Request) {
         text,
       });
       if (error) throw new Error(error.message);
+      resendId = sent?.id ?? null;
       emailStatus = "sent";
     } catch (err) {
+      emailError = err instanceof Error ? err.message : String(err);
       console.error("Resend email failed (lead already saved):", err);
     }
   } else {
@@ -129,9 +133,12 @@ export async function POST(request: Request) {
 
   // 3) Reflect the email outcome on the saved row.
   if (supabase && rowId !== null) {
+    const patch: Record<string, unknown> = { email_status: emailStatus };
+    if (resendId) patch.resend_id = resendId;
+    if (emailError) patch.email_error = emailError;
     const { error } = await supabase
       .from("form_submissions")
-      .update({ email_status: emailStatus })
+      .update(patch)
       .eq("id", rowId);
     if (error) console.error("email_status update failed:", error.message);
   }
