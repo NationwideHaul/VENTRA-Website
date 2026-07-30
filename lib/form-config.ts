@@ -41,7 +41,7 @@ export const brandConfig: BrandConfig = {
   accent: "#c1121f",
   defaultTo: "info@ventrainsurance.com",
   forms: {
-    contacto: { label: "Contacto", to: "info@ventrainsurance.com" },
+    contact: { label: "Contact", to: "info@ventrainsurance.com" },
     "get-a-quote": { label: "Get a quote", to: "info@ventrainsurance.com" },
   },
 };

@@ -21,7 +21,7 @@ import SearchSelect, { type SelectOption } from "@/components/ui/SearchSelect";
  *   2. Your business       — business name, state (searchable), EIN (optional),
  *      industry / business class (searchable, 126 options + Other), about
  *
- * Submits to /api/lead (formId "contacto") and routes to /thank-you on success.
+ * Submits to /api/lead (formId "contact") and routes to /thank-you on success.
  */
 
 type Props = {
@@ -169,14 +169,12 @@ export default function ContactForm({ initialState, onClose }: Props) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          formId: "contacto",
+          formId: "contact",
           name: `${data.firstName} ${data.lastName}`.trim(),
           email: data.email.trim(),
           phone: data.phone.trim(),
           company: data.businessName.trim(),
           fields: {
-            firstName: data.firstName.trim(),
-            lastName: data.lastName.trim(),
             state: stateLabel,
             ein: data.ein.trim(),
             industry: needsOther
