@@ -76,6 +76,7 @@ export const footerLinks: { heading: string; items: NavItem[] }[] = [
       { label: "Industries", href: "/industries" },
       { label: "Carriers", href: "/about#carriers" },
       { label: "Get Insured", href: "/contact" },
+      { label: "Make a Payment", href: "https://ventrains.epaypolicy.com/" },
     ],
   },
   {
