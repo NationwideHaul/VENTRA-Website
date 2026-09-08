@@ -17,6 +17,17 @@ export type FormRoute = {
   label: string;
   /** Inbox that receives this form's leads. */
   to: string;
+  /**
+   * Form Identifier sent to the CRM (crm.roadreadyinsurance.com) so it can match
+   * its Form Mapping and route the lead into the correct SUBACCOUNT/pipeline.
+   *
+   * The CRM webhook (key) is shared org-wide across brands (Ventra + Road Ready),
+   * so the subaccount is chosen by THIS identifier, not by the webhook. Keep the
+   * "Ventra Website —" prefix so these ids are unique to the Ventra subaccount and
+   * can never collide with a Road Ready mapping. A matching Form Mapping with this
+   * exact string must exist under the Ventra brand in the CRM.
+   */
+  crmFormId: string;
 };
 
 export type BrandConfig = {
@@ -39,10 +50,18 @@ export const brandConfig: BrandConfig = {
   label: "Ventra Insurance Group",
   from: "Ventra Forms <ventra@notify.nationwidehaul.com>",
   accent: "#c1121f",
-  defaultTo: "info@ventrainsurance.com",
+  defaultTo: "marketing@ventrainsurance.com",
   forms: {
-    contact: { label: "Contact", to: "info@ventrainsurance.com" },
-    "get-a-quote": { label: "Get a quote", to: "info@ventrainsurance.com" },
+    contact: {
+      label: "Contact",
+      to: "marketing@ventrainsurance.com",
+      crmFormId: "ventra-website-contact",
+    },
+    "get-a-quote": {
+      label: "Get a quote",
+      to: "marketing@ventrainsurance.com",
+      crmFormId: "ventra-website-get-a-quote",
+    },
   },
 };
 
@@ -52,6 +71,7 @@ export function resolveForm(formId: string): FormRoute {
     brandConfig.forms[formId] ?? {
       label: formId || "Form",
       to: brandConfig.defaultTo,
+      crmFormId: `ventra-website-${formId || "form"}`,
     }
   );
 }

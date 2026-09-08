@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { brandConfig, resolveForm } from "@/lib/form-config";
 import { buildLeadEmail } from "@/lib/email-template";
+import { forwardToCrm } from "@/lib/crm";
 
 /**
  * Unified lead intake for every form on the site.
@@ -14,8 +15,10 @@ import { buildLeadEmail } from "@/lib/email-template";
  *      This is the source of truth — it runs server-side only and the key is
  *      never sent to the client.
  *   3. Send the notification email via Resend (Reply-To = the lead).
- *   4. Write back email_status ('sent' | 'failed'). A mail failure must NOT fail
- *      the request — the lead is already saved.
+ *   4. Forward the lead to the CRM webhook (routed to the Ventra subaccount by
+ *      the form's crmFormId). Best-effort, like the email.
+ *   5. Write back email_status (CRM result is logged only — table has no crm_*
+ *      columns). A mail or CRM failure must NOT fail the request — lead is saved.
  */
 
 export const runtime = "nodejs";
@@ -153,7 +156,36 @@ export async function POST(request: Request) {
     console.warn("RESEND_API_KEY not set — no email sent.");
   }
 
-  // 3) Reflect the email outcome on the saved row.
+  // 3) Forward to the CRM — failure here must NOT fail the request either.
+  let crmStatus: "sent" | "failed" | "skipped" = "skipped";
+  let crmError: string | null = null;
+  if (process.env.CRM_LEAD_WEBHOOK_URL) {
+    const result = await forwardToCrm(
+      route,
+      {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        company: data.company,
+        fields: data.fields,
+        utm: data.utm,
+        pageUrl: data.pageUrl,
+      },
+      brandConfig,
+    );
+    crmStatus = result.ok ? "sent" : "failed";
+    if (!result.ok) {
+      crmError = result.error ?? "unknown error";
+      console.error("CRM forward failed (lead already saved):", crmError);
+    }
+  } else {
+    console.warn("CRM_LEAD_WEBHOOK_URL not set — lead not forwarded to CRM.");
+  }
+
+  // 4) Reflect the email outcome on the saved row. NOTE: `form_submissions` has a
+  // fixed schema (no crm_* columns), so the CRM result is only logged above — do
+  // NOT add it to this patch or the whole update (incl. email_status) would fail.
+  void crmStatus;
   if (supabase && rowId !== null) {
     const patch: Record<string, unknown> = { email_status: emailStatus };
     if (resendId) patch.resend_id = resendId;
