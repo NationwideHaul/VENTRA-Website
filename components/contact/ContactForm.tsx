@@ -252,15 +252,21 @@ export default function ContactForm({ initialState, onClose }: Props) {
       </div>
 
       <form onSubmit={handleSubmit} noValidate>
-        {/* Honeypot — hidden off-screen, catches bots; humans never see it. */}
+        {/* Honeypot — hidden off-screen, catches bots; humans never see it.
+            The label/name must NOT look like a real field (e.g. "Company") or
+            browser autofill / password managers fill it and the server drops the
+            lead as a bot. Neutral label + ignore hints keep it empty for humans. */}
         <div aria-hidden className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
-          <label htmlFor="_hp">Company (leave blank)</label>
+          <label htmlFor="_hp">Leave this field empty</label>
           <input
             id="_hp"
             name="_hp"
             type="text"
             tabIndex={-1}
             autoComplete="off"
+            data-lpignore="true"
+            data-1p-ignore="true"
+            data-form-type="other"
             value={data._hp}
             onChange={(e) => set("_hp", e.target.value)}
           />

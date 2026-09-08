@@ -67,8 +67,13 @@ export async function POST(request: Request) {
   }
   const data = parsed.data;
 
-  // Honeypot: only bots fill `_hp`. Pretend success and discard.
+  // Honeypot: only bots fill `_hp`. Pretend success and discard. Log it so a
+  // false positive (e.g. browser autofill filling the hidden field) is visible
+  // instead of silently swallowing a real lead.
   if (data._hp.trim() !== "") {
+    console.warn(
+      `Honeypot triggered — dropped submission (formId=${data.formId}, email=${data.email}, _hp=${JSON.stringify(data._hp)}).`,
+    );
     return NextResponse.json({ ok: true });
   }
 
