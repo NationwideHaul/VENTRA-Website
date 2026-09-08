@@ -101,12 +101,14 @@ export async function POST(request: Request) {
   let rowId: number | string | null = null;
   if (supabase) {
     const { data: inserted, error } = await supabase
-      .from("form_submissions")
+      .from(brandConfig.supabaseTable)
       .insert({
         holding: brandConfig.holding,
         brand: brandConfig.brand,
         form_id: data.formId,
         name: data.name,
+        first_name: data.firstName || null,
+        last_name: data.lastName || null,
         email: data.email,
         phone: data.phone || null,
         company: data.company || null,
@@ -195,7 +197,7 @@ export async function POST(request: Request) {
     if (resendId) patch.resend_id = resendId;
     if (emailError) patch.email_error = emailError;
     const { error } = await supabase
-      .from("form_submissions")
+      .from(brandConfig.supabaseTable)
       .update(patch)
       .eq("id", rowId);
     if (error) console.error("email_status update failed:", error.message);

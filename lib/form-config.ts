@@ -41,6 +41,12 @@ export type BrandConfig = {
   accent: string;
   /** Fallback inbox for any formId not present in `forms`. */
   defaultTo: string;
+  /**
+   * Supabase table that stores THIS brand's leads. The Marketing Dashboard
+   * project keeps one table per brand (e.g. "Road Ready Insurance", "NFI Truck
+   * Sales") so brands don't mix. Must match the table name exactly.
+   */
+  supabaseTable: string;
   forms: Record<string, FormRoute>;
 };
 
@@ -51,6 +57,7 @@ export const brandConfig: BrandConfig = {
   from: "Ventra Forms <ventra@notify.nationwidehaul.com>",
   accent: "#c1121f",
   defaultTo: "marketing@ventrainsurance.com",
+  supabaseTable: "Ventra Insurance",
   forms: {
     contact: {
       label: "Contact",
