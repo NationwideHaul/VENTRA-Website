@@ -40,6 +40,47 @@ function splitName(lead: CrmLead): { firstName: string; lastName: string } {
   return { firstName: full.slice(0, sp), lastName: full.slice(sp + 1).trim() };
 }
 
+/** "ein" -> "EIN", "businessName" -> "Business Name". */
+function prettyLabel(key: string): string {
+  if (key.toLowerCase() === "ein") return "EIN";
+  return key
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[_-]+/g, " ")
+    .replace(/^./, (c) => c.toUpperCase());
+}
+
+/** Flatten non-empty form fields to top-level string keys the CRM can auto-map. */
+function flattenFields(fields: Record<string, unknown>): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(fields)) {
+    if (v == null) continue;
+    const s = typeof v === "string" ? v : String(v);
+    if (s.trim() !== "") out[k] = s;
+  }
+  return out;
+}
+
+/**
+ * Human-readable summary of the extra detail, so nothing is lost even if the CRM
+ * doesn't map a particular key to a deal property.
+ */
+function buildNotes(lead: CrmLead, brand: BrandConfig): string {
+  const lines: string[] = [];
+  const add = (label: string, val: unknown) => {
+    const s = val == null ? "" : String(val).trim();
+    if (s) lines.push(`${label}: ${s}`);
+  };
+  for (const [k, v] of Object.entries(lead.fields)) add(prettyLabel(k), v);
+  add("Source", brand.label);
+  add("Page", lead.pageUrl);
+  const utm = Object.entries(lead.utm)
+    .filter(([, v]) => v)
+    .map(([k, v]) => `${k}=${v}`)
+    .join(", ");
+  add("UTM", utm);
+  return lines.join("\n");
+}
+
 const TIMEOUT_MS = 8000;
 
 export async function forwardToCrm(
@@ -54,18 +95,26 @@ export async function forwardToCrm(
   // and `formIdentifier` are REQUIRED; `formIdentifier` is what the CRM matches
   // against its Form Mapping to route the lead to the Ventra subaccount.
   const { firstName, lastName } = splitName(lead);
+  const notes = buildNotes(lead, brand);
   const payload = {
+    // Extra form fields (state, industry, ein, about…) flattened to top-level so
+    // the CRM auto-maps them. Spread FIRST so it can never clobber the canonical
+    // keys below.
+    ...flattenFields(lead.fields),
     formIdentifier: route.crmFormId,
     firstName,
     lastName,
-    source: brand.label,
-    brand: brand.brand,
-    name: lead.name,
     email: lead.email,
     phone: lead.phone || "",
     company: lead.company || "",
+    source: brand.label,
+    brand: brand.brand,
+    name: lead.name,
     pageUrl: lead.pageUrl || "",
     utm: lead.utm,
+    // Catch-all so the detail is always visible on the deal, mapped or not.
+    notes,
+    message: notes,
     fields: lead.fields,
   };
 
