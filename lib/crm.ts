@@ -49,29 +49,22 @@ function prettyLabel(key: string): string {
     .replace(/^./, (c) => c.toUpperCase());
 }
 
-/** Flatten non-empty form fields to top-level string keys the CRM can auto-map. */
-function flattenFields(fields: Record<string, unknown>): Record<string, string> {
-  const out: Record<string, string> = {};
-  for (const [k, v] of Object.entries(fields)) {
-    if (v == null) continue;
-    const s = typeof v === "string" ? v : String(v);
-    if (s.trim() !== "") out[k] = s;
-  }
-  return out;
-}
+const str = (v: unknown): string => (v == null ? "" : String(v).trim());
 
 /**
- * Human-readable summary of the extra detail, so nothing is lost even if the CRM
- * doesn't map a particular key to a deal property.
+ * Human-readable summary of detail the CRM has no dedicated field for (industry,
+ * about, page, UTM). Fields already mapped to real CRM columns are skipped.
  */
-function buildNotes(lead: CrmLead, brand: BrandConfig): string {
+function buildNotes(lead: CrmLead, skip: Set<string>): string {
   const lines: string[] = [];
   const add = (label: string, val: unknown) => {
-    const s = val == null ? "" : String(val).trim();
+    const s = str(val);
     if (s) lines.push(`${label}: ${s}`);
   };
-  for (const [k, v] of Object.entries(lead.fields)) add(prettyLabel(k), v);
-  add("Source", brand.label);
+  for (const [k, v] of Object.entries(lead.fields)) {
+    if (skip.has(k)) continue;
+    add(prettyLabel(k), v);
+  }
   add("Page", lead.pageUrl);
   const utm = Object.entries(lead.utm)
     .filter(([, v]) => v)
@@ -94,29 +87,29 @@ export async function forwardToCrm(
   // Flat payload matching the CRM's lead-intake schema. `firstName`/`lastName`
   // and `formIdentifier` are REQUIRED; `formIdentifier` is what the CRM matches
   // against its Form Mapping to route the lead to the Ventra subaccount.
+  // Field names below MUST match the CRM's lead-intake schema exactly (verified
+  // against the live endpoint). Recognized: firstName, lastName, email, phone,
+  // companyName, address, city, state, zipCode, ein, dotNumber, leadSource,
+  // lineOfBusiness (enum), notes, comments, formIdentifier. Anything else is
+  // dropped by the CRM — e.g. `company`/`source` are NOT read (must be
+  // `companyName`/`leadSource`), and there is no `industry` field (→ notes).
   const { firstName, lastName } = splitName(lead);
-  const notes = buildNotes(lead, brand);
-  const payload = {
-    // Extra form fields (state, industry, ein, about…) flattened to top-level so
-    // the CRM auto-maps them. Spread FIRST so it can never clobber the canonical
-    // keys below.
-    ...flattenFields(lead.fields),
+  const fields = lead.fields;
+  const mapped = new Set(["state", "ein"]); // form fields with a dedicated CRM column
+  const payload: Record<string, unknown> = {
     formIdentifier: route.crmFormId,
     firstName,
     lastName,
     email: lead.email,
-    phone: lead.phone || "",
-    company: lead.company || "",
-    source: brand.label,
-    brand: brand.brand,
-    name: lead.name,
-    pageUrl: lead.pageUrl || "",
-    utm: lead.utm,
-    // Catch-all so the detail is always visible on the deal, mapped or not.
-    notes,
-    message: notes,
-    fields: lead.fields,
+    leadSource: brand.label,
+    notes: buildNotes(lead, mapped),
   };
+  if (lead.phone) payload.phone = lead.phone;
+  if (lead.company) payload.companyName = lead.company;
+  const state = str(fields.state);
+  if (state) payload.state = state;
+  const ein = str(fields.ein);
+  if (ein) payload.ein = ein;
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
