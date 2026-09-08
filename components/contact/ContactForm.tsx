@@ -171,6 +171,8 @@ export default function ContactForm({ initialState, onClose }: Props) {
         body: JSON.stringify({
           formId: "contact",
           name: `${data.firstName} ${data.lastName}`.trim(),
+          firstName: data.firstName.trim(),
+          lastName: data.lastName.trim(),
           email: data.email.trim(),
           phone: data.phone.trim(),
           company: data.businessName.trim(),

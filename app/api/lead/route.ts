@@ -26,6 +26,8 @@ export const runtime = "nodejs";
 const leadSchema = z.object({
   formId: z.string().min(1),
   name: z.string().min(1),
+  firstName: z.string().optional().default(""),
+  lastName: z.string().optional().default(""),
   email: z.email(),
   phone: z.string().optional().default(""),
   company: z.string().optional().default(""),
@@ -164,6 +166,8 @@ export async function POST(request: Request) {
       route,
       {
         name: data.name,
+        firstName: data.firstName,
+        lastName: data.lastName,
         email: data.email,
         phone: data.phone,
         company: data.company,

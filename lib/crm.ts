@@ -15,6 +15,8 @@ import type { BrandConfig, FormRoute } from "./form-config";
 
 export type CrmLead = {
   name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   company: string;
@@ -22,6 +24,21 @@ export type CrmLead = {
   utm: Record<string, string>;
   pageUrl: string;
 };
+
+/**
+ * The CRM's lead-intake schema REQUIRES `firstName` + `lastName` as separate
+ * string fields (it rejects a single `name` with 400). Prefer the explicit
+ * fields; if a form only sends a combined name, split on the first space.
+ */
+function splitName(lead: CrmLead): { firstName: string; lastName: string } {
+  const first = lead.firstName.trim();
+  const last = lead.lastName.trim();
+  if (first || last) return { firstName: first || last, lastName: last || first };
+  const full = lead.name.trim();
+  const sp = full.indexOf(" ");
+  if (sp === -1) return { firstName: full, lastName: full };
+  return { firstName: full.slice(0, sp), lastName: full.slice(sp + 1).trim() };
+}
 
 const TIMEOUT_MS = 8000;
 
@@ -33,10 +50,14 @@ export async function forwardToCrm(
   const url = process.env.CRM_LEAD_WEBHOOK_URL;
   if (!url) return { ok: false, error: "CRM_LEAD_WEBHOOK_URL not set" };
 
-  // Flat, clearly-named payload for the CRM's custom lead-intake parser.
-  // `formIdentifier` is the field the CRM matches against its Form Mapping.
+  // Flat payload matching the CRM's lead-intake schema. `firstName`/`lastName`
+  // and `formIdentifier` are REQUIRED; `formIdentifier` is what the CRM matches
+  // against its Form Mapping to route the lead to the Ventra subaccount.
+  const { firstName, lastName } = splitName(lead);
   const payload = {
     formIdentifier: route.crmFormId,
+    firstName,
+    lastName,
     source: brand.label,
     brand: brand.brand,
     name: lead.name,
