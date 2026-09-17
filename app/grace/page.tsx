@@ -108,7 +108,7 @@ export default function GracePage() {
           aria-hidden
           className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-sand/50 via-white to-white"
         />
-        <div className="container-page pb-[clamp(2.5rem,6vw,4rem)] pt-[clamp(1.5rem,4vw,3rem)]">
+        <div className="container-page pb-[clamp(2.5rem,6vw,4rem)] pt-[clamp(2.75rem,6vw,5rem)]">
           <div className="grid items-center gap-8 sm:gap-10 lg:grid-cols-[auto_1fr] lg:gap-14">
             {/* Portrait — layered rust panel behind, echoing the homepage.
                 Rendered un-gated (no scroll-reveal) with priority so it paints
@@ -126,7 +126,7 @@ export default function GracePage() {
                   unoptimized={DEV_IMAGE_UNOPTIMIZED}
                   sizes="(min-width: 640px) 288px, 224px"
                   placeholder="blur"
-                  className="relative h-56 w-56 rounded-3xl object-cover shadow-xl ring-1 ring-ink/10 transition-transform duration-500 ease-out group-hover:scale-[1.02] sm:h-72 sm:w-72"
+                  className="relative h-56 w-56 rounded-3xl object-cover object-[center_18%] shadow-xl ring-1 ring-ink/10 transition-transform duration-500 ease-out group-hover:scale-[1.02] sm:h-72 sm:w-72"
                 />
               </div>
             </div>
@@ -172,8 +172,8 @@ export default function GracePage() {
       <section className="border-y border-ink/10 bg-white">
         <div className="container-page py-[clamp(1.75rem,4vw,3rem)]">
           <Reveal>
-            <p className="text-center text-sm font-medium uppercase tracking-wide text-ink/45">
-              Access to more than 100 carriers
+            <p className="text-center font-heading text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+              Access to <span className="text-rust">more than 100 carriers</span>
             </p>
           </Reveal>
           <div className="mt-8">
