@@ -3,16 +3,22 @@
 import { useEffect, useId, useMemo, useState } from "react";
 import { grace, graceTel, GRACE_FORMS } from "@/data/grace";
 import {
-  GRACE_FORMS_ID,
   GRACE_TAB_EVENT,
   type GraceTab,
 } from "@/components/grace/formBus";
+import SearchSelect, { type SelectOption } from "@/components/ui/SearchSelect";
+import { usStates } from "@/data/states";
+import {
+  businessClasses,
+  OTHER_BUSINESS_CLASS,
+} from "@/data/business-classes";
 
 /**
  * The two intake forms on Grace's page, behind a segmented toggle — only one is
- * visible at a time, each capped at four fields:
- *   • "Coverage Gap Review" — Name, Business name, Phone, Email → Book My Free Review
- *   • "Contact Grace"       — Name, Phone, How can we help?      → Send to Grace
+ * visible at a time:
+ *   • "Policy Review" — first/last name, business, email, phone, state,
+ *     industry, and optional comments (mirrors the site's main intake form).
+ *   • "Contact Us"    — first/last name, email, phone.
  *
  * Both post to /api/lead (the same Supabase + Resend + CRM pipeline as the rest
  * of the site), carry a hidden `rep: "grace"`, and pass through any UTM params
@@ -52,13 +58,14 @@ function readUtm(): Record<string, string> {
   return out;
 }
 
-/** Split a single "Name" field into first / last for Supabase + the CRM. */
-function splitName(full: string): { firstName: string; lastName: string } {
-  const t = full.trim().replace(/\s+/g, " ");
-  const sp = t.indexOf(" ");
-  if (sp === -1) return { firstName: t, lastName: "" };
-  return { firstName: t.slice(0, sp), lastName: t.slice(sp + 1) };
-}
+const STATE_OPTIONS: SelectOption[] = usStates.map((s) => ({
+  value: s.code,
+  label: s.name,
+}));
+const INDUSTRY_OPTIONS: SelectOption[] = businessClasses.map((c) => ({
+  value: c,
+  label: c,
+}));
 
 // Shared field styling — identical to the site's ContactForm so the two forms
 // read as one design system.
@@ -70,20 +77,40 @@ const labelCls =
   "mb-1.5 block text-xs font-semibold uppercase tracking-wide text-ink/55";
 
 type ReviewState = {
-  name: string;
+  firstName: string;
+  lastName: string;
   businessName: string;
-  phone: string;
   email: string;
+  phone: string;
+  state: string;
+  industry: string;
+  otherIndustry: string;
+  comments: string;
 };
-type ContactState = { name: string; phone: string; message: string };
+type ContactState = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+};
 
 const EMPTY_REVIEW: ReviewState = {
-  name: "",
+  firstName: "",
+  lastName: "",
   businessName: "",
-  phone: "",
   email: "",
+  phone: "",
+  state: "",
+  industry: "",
+  otherIndustry: "",
+  comments: "",
 };
-const EMPTY_CONTACT: ContactState = { name: "", phone: "", message: "" };
+const EMPTY_CONTACT: ContactState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+};
 
 export default function GraceForms() {
   const [tab, setTab] = useState<GraceTab>("review");
@@ -111,16 +138,26 @@ export default function GraceForms() {
     return () => window.removeEventListener(GRACE_TAB_EVENT, onSelect);
   }, []);
 
+  const needsOther = review.industry === OTHER_BUSINESS_CLASS;
+
   const reviewValid = useMemo(
     () =>
-      review.name.trim() !== "" &&
+      review.firstName.trim() !== "" &&
+      review.lastName.trim() !== "" &&
       review.businessName.trim() !== "" &&
+      emailOk(review.email) &&
       phoneOk(review.phone) &&
-      emailOk(review.email),
-    [review],
+      review.state !== "" &&
+      review.industry !== "" &&
+      (!needsOther || review.otherIndustry.trim() !== ""),
+    [review, needsOther],
   );
   const contactValid = useMemo(
-    () => contactData.name.trim() !== "" && phoneOk(contactData.phone),
+    () =>
+      contactData.firstName.trim() !== "" &&
+      contactData.lastName.trim() !== "" &&
+      emailOk(contactData.email) &&
+      phoneOk(contactData.phone),
     [contactData],
   );
   const valid = tab === "review" ? reviewValid : contactValid;
@@ -131,6 +168,11 @@ export default function GraceForms() {
     setStatus("idle");
   }
 
+  const setR = <K extends keyof ReviewState>(key: K, value: ReviewState[K]) =>
+    setReview((s) => ({ ...s, [key]: value }));
+  const setC = <K extends keyof ContactState>(key: K, value: ContactState[K]) =>
+    setContactData((s) => ({ ...s, [key]: value }));
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!valid) {
@@ -140,15 +182,26 @@ export default function GraceForms() {
     setStatus("submitting");
 
     const isReview = tab === "review";
-    const fullName = (isReview ? review.name : contactData.name).trim();
-    const { firstName, lastName } = splitName(fullName);
-    const phone = (isReview ? review.phone : contactData.phone).trim();
+    const src = isReview ? review : contactData;
+    const firstName = src.firstName.trim();
+    const lastName = src.lastName.trim();
+    const email = src.email.trim();
+    const phone = src.phone.trim();
 
-    // `rep` tags the lead as Grace's everywhere; the review form's fields also
-    // carry a short summary line the CRM surfaces in its notes.
+    // `rep` tags the lead as Grace's everywhere. The review form also carries
+    // the business, state, industry, and any comments the CRM surfaces in notes.
     const fields: Record<string, string> = { rep: "grace" };
-    if (!isReview && contactData.message.trim()) {
-      fields.message = contactData.message.trim();
+    let company = "";
+    if (isReview) {
+      company = review.businessName.trim();
+      const stateLabel =
+        STATE_OPTIONS.find((o) => o.value === review.state)?.label ??
+        review.state;
+      if (stateLabel) fields.state = stateLabel;
+      fields.industry = needsOther
+        ? `Other: ${review.otherIndustry.trim()}`
+        : review.industry;
+      if (review.comments.trim()) fields.comments = review.comments.trim();
     }
 
     try {
@@ -157,12 +210,12 @@ export default function GraceForms() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           formId: isReview ? GRACE_FORMS.review : GRACE_FORMS.contact,
-          name: fullName,
+          name: `${firstName} ${lastName}`.trim(),
           firstName,
           lastName,
-          email: isReview ? review.email.trim() : "",
+          email,
           phone,
-          company: isReview ? review.businessName.trim() : "",
+          company,
           fields,
           utm: readUtm(),
           pageUrl:
@@ -178,8 +231,8 @@ export default function GraceForms() {
   }
 
   const tabs: { id: GraceTab; label: string }[] = [
-    { id: "review", label: "Coverage Gap Review" },
-    { id: "contact", label: "Contact Grace" },
+    { id: "review", label: "Policy Review" },
+    { id: "contact", label: "Contact Us" },
   ];
 
   return (
@@ -225,7 +278,7 @@ export default function GraceForms() {
             aria-labelledby={`${uid}-tab-${tab}`}
             className="mt-6"
           >
-            {/* Honeypot — off-screen; only bots fill it. Neutral label + ignore
+            {/* Honeypot — off-screen; only bots fill it. Neutral name + ignore
                 hints keep browser autofill / password managers away. */}
             <div
               aria-hidden
@@ -248,61 +301,147 @@ export default function GraceForms() {
 
             {tab === "review" ? (
               <div className="panel-in space-y-4">
-                <Field
-                  id={`${uid}-r-name`}
-                  label="Name"
-                  autoComplete="name"
-                  value={review.name}
-                  onChange={(v) => setReview((s) => ({ ...s, name: v }))}
-                  invalid={touched && review.name.trim() === ""}
-                />
+                <div className="grid grid-cols-2 gap-4">
+                  <Field
+                    id={`${uid}-r-first`}
+                    label="First name"
+                    autoComplete="given-name"
+                    value={review.firstName}
+                    onChange={(v) => setR("firstName", v)}
+                    invalid={touched && review.firstName.trim() === ""}
+                  />
+                  <Field
+                    id={`${uid}-r-last`}
+                    label="Last name"
+                    autoComplete="family-name"
+                    value={review.lastName}
+                    onChange={(v) => setR("lastName", v)}
+                    invalid={touched && review.lastName.trim() === ""}
+                  />
+                </div>
                 <Field
                   id={`${uid}-r-business`}
                   label="Business name"
                   autoComplete="organization"
                   placeholder="Acme Construction LLC"
                   value={review.businessName}
-                  onChange={(v) =>
-                    setReview((s) => ({ ...s, businessName: v }))
-                  }
+                  onChange={(v) => setR("businessName", v)}
                   invalid={touched && review.businessName.trim() === ""}
                 />
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <Field
+                    id={`${uid}-r-email`}
+                    label="Email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    placeholder="you@business.com"
+                    value={review.email}
+                    onChange={(v) => setR("email", v)}
+                    invalid={touched && !emailOk(review.email)}
+                  />
+                  <Field
+                    id={`${uid}-r-phone`}
+                    label="Phone"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    placeholder="(555) 123-4567"
+                    value={review.phone}
+                    onChange={(v) => setR("phone", formatPhone(v))}
+                    invalid={touched && !phoneOk(review.phone)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor={`${uid}-r-state`} className={labelCls}>
+                    State
+                  </label>
+                  <SearchSelect
+                    id={`${uid}-r-state`}
+                    value={review.state}
+                    onChange={(v) => setR("state", v)}
+                    options={STATE_OPTIONS}
+                    placeholder="Select your state…"
+                    searchPlaceholder="Search states…"
+                    invalid={touched && review.state === ""}
+                  />
+                </div>
+                <div>
+                  <label htmlFor={`${uid}-r-industry`} className={labelCls}>
+                    Industry
+                  </label>
+                  <SearchSelect
+                    id={`${uid}-r-industry`}
+                    value={review.industry}
+                    onChange={(v) => setR("industry", v)}
+                    options={INDUSTRY_OPTIONS}
+                    placeholder="Select your industry…"
+                    searchPlaceholder="Search 120+ classes…"
+                    invalid={touched && review.industry === ""}
+                  />
+                  {needsOther && (
+                    <input
+                      id={`${uid}-r-other`}
+                      value={review.otherIndustry}
+                      onChange={(e) => setR("otherIndustry", e.target.value)}
+                      placeholder="Please specify your industry"
+                      className={
+                        field +
+                        " mt-3" +
+                        (touched && review.otherIndustry.trim() === ""
+                          ? " border-rust/70 ring-2 ring-rust/15"
+                          : "")
+                      }
+                    />
+                  )}
+                </div>
+                <div>
+                  <label htmlFor={`${uid}-r-comments`} className={labelCls}>
+                    Comments{" "}
+                    <span className="font-normal normal-case tracking-normal text-ink/40">
+                      (optional)
+                    </span>
+                  </label>
+                  <textarea
+                    id={`${uid}-r-comments`}
+                    rows={3}
+                    value={review.comments}
+                    onChange={(e) => setR("comments", e.target.value)}
+                    placeholder="Anything that shapes your risk, or what you'd like us to look at."
+                    className={area}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="panel-in space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <Field
+                    id={`${uid}-c-first`}
+                    label="First name"
+                    autoComplete="given-name"
+                    value={contactData.firstName}
+                    onChange={(v) => setC("firstName", v)}
+                    invalid={touched && contactData.firstName.trim() === ""}
+                  />
+                  <Field
+                    id={`${uid}-c-last`}
+                    label="Last name"
+                    autoComplete="family-name"
+                    value={contactData.lastName}
+                    onChange={(v) => setC("lastName", v)}
+                    invalid={touched && contactData.lastName.trim() === ""}
+                  />
+                </div>
                 <Field
-                  id={`${uid}-r-phone`}
-                  label="Phone"
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  placeholder="(555) 123-4567"
-                  value={review.phone}
-                  onChange={(v) =>
-                    setReview((s) => ({ ...s, phone: formatPhone(v) }))
-                  }
-                  invalid={touched && !phoneOk(review.phone)}
-                />
-                <Field
-                  id={`${uid}-r-email`}
+                  id={`${uid}-c-email`}
                   label="Email"
                   type="email"
                   inputMode="email"
                   autoComplete="email"
                   placeholder="you@business.com"
-                  value={review.email}
-                  onChange={(v) => setReview((s) => ({ ...s, email: v }))}
-                  invalid={touched && !emailOk(review.email)}
-                />
-              </div>
-            ) : (
-              <div className="panel-in space-y-4">
-                <Field
-                  id={`${uid}-c-name`}
-                  label="Name"
-                  autoComplete="name"
-                  value={contactData.name}
-                  onChange={(v) =>
-                    setContactData((s) => ({ ...s, name: v }))
-                  }
-                  invalid={touched && contactData.name.trim() === ""}
+                  value={contactData.email}
+                  onChange={(v) => setC("email", v)}
+                  invalid={touched && !emailOk(contactData.email)}
                 />
                 <Field
                   id={`${uid}-c-phone`}
@@ -312,29 +451,9 @@ export default function GraceForms() {
                   autoComplete="tel"
                   placeholder="(555) 123-4567"
                   value={contactData.phone}
-                  onChange={(v) =>
-                    setContactData((s) => ({ ...s, phone: formatPhone(v) }))
-                  }
+                  onChange={(v) => setC("phone", formatPhone(v))}
                   invalid={touched && !phoneOk(contactData.phone)}
                 />
-                <div>
-                  <label htmlFor={`${uid}-c-msg`} className={labelCls}>
-                    How can we help?{" "}
-                    <span className="font-normal normal-case tracking-normal text-ink/40">
-                      (optional)
-                    </span>
-                  </label>
-                  <textarea
-                    id={`${uid}-c-msg`}
-                    rows={3}
-                    value={contactData.message}
-                    onChange={(e) =>
-                      setContactData((s) => ({ ...s, message: e.target.value }))
-                    }
-                    placeholder="A quick note about your business or what you're wondering about."
-                    className={area}
-                  />
-                </div>
               </div>
             )}
 
@@ -345,7 +464,7 @@ export default function GraceForms() {
             )}
             {status === "error" && (
               <p className="mt-4 text-sm text-rust">
-                Something went wrong. Please try again — or call us at{" "}
+                Something went wrong. Please try again, or call us at{" "}
                 <a href={`tel:${graceTel}`} className="font-semibold underline">
                   {grace.phone}
                 </a>
@@ -361,13 +480,9 @@ export default function GraceForms() {
               {status === "submitting"
                 ? "Sending…"
                 : tab === "review"
-                  ? "Book My Free Review"
-                  : "Send to Grace"}
+                  ? "Get My Free Policy Review"
+                  : "Send"}
             </button>
-
-            <p className="mt-3 text-center text-xs text-ink/45">
-              No obligation. Your details go straight to Grace&rsquo;s team.
-            </p>
           </form>
         </>
       )}
@@ -397,8 +512,8 @@ function SuccessPanel() {
         Got it. An agent will contact you shortly.
       </h3>
       <p className="mx-auto mt-3 max-w-sm leading-relaxed text-ink/65">
-        Thanks — your details are on their way to Grace&rsquo;s team. Keep an eye
-        on your phone.
+        Thanks. Your details are on their way and someone will reach out soon.
+        Keep an eye on your phone.
       </p>
       <div className="mt-7 border-t border-ink/10 pt-6">
         <p className="text-sm font-medium text-ink/80">Prefer to talk now?</p>
