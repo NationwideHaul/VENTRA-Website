@@ -27,6 +27,8 @@ type LogoProps = {
   link?: boolean;
   /** Eager-load (use for the header logo). */
   priority?: boolean;
+  /** Bypass the image optimizer (e.g. to dodge the flaky local-dev optimizer). */
+  unoptimized?: boolean;
   className?: string;
 };
 
@@ -41,6 +43,7 @@ export default function Logo({
   height = 36,
   link = true,
   priority = false,
+  unoptimized = false,
   className = "",
 }: LogoProps) {
   const src = srcOverride ?? (submark ? SUBMARK[variant] : WORDMARK[variant]);
@@ -54,6 +57,7 @@ export default function Logo({
       width={width}
       height={height}
       priority={priority}
+      unoptimized={unoptimized}
       sizes={`${width}px`}
       className={className}
     />

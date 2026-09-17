@@ -69,6 +69,20 @@ export const brandConfig: BrandConfig = {
       to: "marketing@ventrainsurance.com",
       crmFormId: "ventra-website-get-a-quote",
     },
+    // Grace Vengelis' personal landing page (/grace). Both forms carry
+    // `rep: "grace"` in their fields so the lead is unmistakably hers across
+    // Supabase, the Resend notification, and the CRM (GHL) notes. Leads route to
+    // GRACE_LEAD_EMAIL when set, otherwise to the shared marketing inbox.
+    "grace-review": {
+      label: "Grace — Coverage Gap Review",
+      to: process.env.GRACE_LEAD_EMAIL ?? "marketing@ventrainsurance.com",
+      crmFormId: "ventra-website-grace-review",
+    },
+    "grace-contact": {
+      label: "Grace — Contact",
+      to: process.env.GRACE_LEAD_EMAIL ?? "marketing@ventrainsurance.com",
+      crmFormId: "ventra-website-grace-contact",
+    },
   },
 };
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import SiteChrome from "@/components/layout/SiteChrome";
 import SmoothScroll from "@/components/motion/SmoothScroll";
 import { ContactModalProvider } from "@/components/contact/contact-modal";
 import { site } from "@/data/site";
@@ -57,11 +58,11 @@ export default function RootLayout({
         </a>
 
         <ContactModalProvider>
-          <Header />
-          <main id="main" className="pt-[var(--header-h)]">
+          {/* Header + Footer render on every route except bare landing pages
+              (e.g. /grace), which own their own minimal chrome. */}
+          <SiteChrome header={<Header />} footer={<Footer />}>
             {children}
-          </main>
-          <Footer />
+          </SiteChrome>
         </ContactModalProvider>
       </body>
     </html>
