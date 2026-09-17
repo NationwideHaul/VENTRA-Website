@@ -29,8 +29,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/team/grace.jpg",
-        width: 400,
-        height: 400,
+        width: 975,
+        height: 1200,
         alt: `${grace.name}, ${grace.title}, ${site.name}`,
       },
     ],
